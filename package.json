@@ -1,0 +1,17 @@
+{
+  "name": "shop-builder",
+  "version": "1.0.0",
+  "description": "A project for building an e-commerce platform using Supabase.",
+  "type": "module",
+  "scripts": {
+    "start": "node supabase.js",
+    "dev": "nodemon supabase.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
