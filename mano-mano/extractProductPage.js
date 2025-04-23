@@ -10,7 +10,6 @@ import { runWithMultipleBrowsers } from '../utils/multiBrowser.js';
  */
 async function extractProductDetails(browser, url) {
     const page = await browser.newPage();
-    console.log(`Navigation vers le produit ${url}...`);
     await page.goto(url, { waitUntil: 'networkidle2' });
 
     const productDetails = await page.evaluate(async () => {
@@ -51,6 +50,9 @@ async function run() {
     const categories = JSON.parse(fs.readFileSync(productsFilePath, 'utf8'));
 
     const tasks = [];
+    let totalProducts = 0;
+    let completedProducts = 0;
+
     for (const category of categories) {
         const categoryFileName = `${category.categoryTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
         const categoryFilePath = path.join(outputDir, categoryFileName);
@@ -63,10 +65,10 @@ async function run() {
 
         for (const product of category.products) {
             if (categoryProducts.some(p => p.url === product.url)) {
-                console.log(`Produit déjà extrait : ${product.url}. On passe.`);
                 continue;
             }
 
+            totalProducts++;
             tasks.push(async (browser) => {
                 try {
                     const { title, url, price, originalPrice } = product;
@@ -80,13 +82,15 @@ async function run() {
                         ...productDetails,
                     });
 
-                    console.log(`Produit extrait : ${url}`);
-
                     // Save the category file after each product extraction
                     fs.writeFileSync(categoryFilePath, JSON.stringify(categoryProducts, null, 2), 'utf8');
-                    console.log(`Fichier mis à jour : ${categoryFileName}`);
+
+                    // Update progress
+                    completedProducts++;
+                    const progress = Math.round((completedProducts / totalProducts) * 100);
+                    console.log(`[${progress}%] Extracted ${completedProducts}/${totalProducts} products.`);
                 } catch (err) {
-                    console.error(`Erreur lors de l'extraction du produit ${product.url} :`, err);
+                    console.error(`Error extracting product ${product.url}:`, err);
                 }
             });
         }
@@ -96,9 +100,9 @@ async function run() {
     const maxBrowsers = 8; // Adjust this value to control the number of simultaneous browsers
     await runWithMultipleBrowsers(tasks, maxBrowsers);
 
-    console.log("Extraction des produits détaillés terminée.");
+    console.log("Product extraction complete.");
 }
 
 run().catch(err => {
-    console.error("Erreur durant l'extraction des produits détaillés :", err);
+    console.error("Error during product extraction:", err);
 });
