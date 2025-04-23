@@ -106,6 +106,8 @@ async function run() {
                 args: ['--no-sandbox', '--disable-setuid-sandbox', '--start-maximized'],
                 executablePath: "/usr/bin/google-chrome-stable"
             });
+
+            
             
             try {
                 const products = await extractProductsFromCategory(browser, category.url);
