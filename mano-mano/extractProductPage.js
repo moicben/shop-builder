@@ -58,7 +58,7 @@ async function extractProductDetails(browser, url, cookieFilePath) {
 async function run() {
     const productsFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'products.json');
     const outputDir = path.join(process.cwd(), 'mano-mano', 'json', 'products');
-    const cookieFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'cookies.json'); // Path to your cookie file
+    const cookieFilePath = path.join(process.cwd(), 'mano-mano', 'cookies.json'); // Path to your cookie file
 
     // Ensure the output directory exists
     if (!fs.existsSync(outputDir)) {
