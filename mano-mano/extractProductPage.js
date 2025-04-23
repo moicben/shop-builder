@@ -34,7 +34,14 @@ async function extractProductDetails(browser, url, cookieFilePath) {
         // Scroll to load content
         window.scrollBy(0, 2400);
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Attempt to get the details content immediately
+        let details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
+
+        // If details is not found, wait 4 seconds and try again
+        if (!details) {
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
+        }
 
         // Get images from the primary selector
         let images = getImages('body > div.c91M7oc > div > div > div > div.PDnmYj > aside > button > img');
@@ -47,7 +54,7 @@ async function extractProductDetails(browser, url, cookieFilePath) {
         return {
             features: getFeatures('ul.a_I_DU > li'),
             images: images,
-            details: document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null,
+            details: details,
         };
     });
 
