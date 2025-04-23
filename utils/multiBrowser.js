@@ -6,7 +6,7 @@ import puppeteer from 'puppeteer';
  */
 export async function launchBrowser() {
     return puppeteer.launch({
-        headless: false,
+        headless: false, // Garder le mode non-headless
         defaultViewport: { width: 1440, height: 900 },
         args: [
             '--no-sandbox',
@@ -36,52 +36,64 @@ export async function launchBrowser() {
 }
 
 /**
- * Manages multiple browser instances and executes tasks in parallel.
+ * Manages multiple browser instances and executes tasks in parallel with retries.
  * @param {Array} tasks - An array of tasks to execute. Each task is a function that accepts a browser instance and a page.
  * @param {number} maxBrowsers - The maximum number of browsers to run simultaneously.
  * @param {number} [tabsPerBrowser=1] - The number of tabs (pages) each browser should open.
+ * @param {number} [maxRetries=3] - The maximum number of retries for a failed task.
  * @returns {Promise<Array>} - The results of all tasks.
  */
-export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser = 1) {
+export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser = 1, maxRetries = 3) {
     const browsers = [];
     const results = [];
-    const taskQueue = [...tasks]; // Copy tasks into a queue
+    const taskQueue = tasks.map((task) => ({ task, retries: 0 })); // Ajout des retries pour chaque tâche
 
     try {
-        // Launch the specified number of browsers
+        // Lancer les navigateurs
         for (let i = 0; i < maxBrowsers; i++) {
             browsers.push(await launchBrowser());
         }
 
-        // Function to execute tasks sequentially on a page
+        // Fonction pour exécuter les tâches sur une page
         const executeTasksOnPage = async (browser, page) => {
             while (taskQueue.length > 0) {
-                const task = taskQueue.shift(); // Get the next task
+                const { task, retries } = taskQueue.shift(); // Récupérer la tâche et son compteur de retries
                 if (!task) break;
 
                 try {
-                    const result = await task(browser, page);
-                    results.push(result);
+                    const result = await task(browser, page); // Exécuter la tâche
+                    results.push(result); // Ajouter le résultat
                 } catch (err) {
-                    console.error(`Error executing a task:`, err);
+                    console.error(`Error executing task (retry ${retries}):`, err);
+
+                    if (retries < maxRetries) {
+                        // Réinsérer la tâche dans la file d'attente avec un retry incrémenté
+                        taskQueue.push({ task, retries: retries + 1 });
+                    } else {
+                        console.error(`Task failed after ${maxRetries} retries.`);
+                    }
                 }
             }
         };
 
-        // Execute tasks on all browsers with multiple tabs
+        // Exécuter les tâches sur tous les navigateurs avec plusieurs onglets
         await Promise.all(
             browsers.map(async (browser) => {
                 const pages = [];
                 for (let i = 0; i < tabsPerBrowser; i++) {
-                    pages.push(await browser.newPage());
+                    const page = await browser.newPage();
+
+                    // Configurer un timeout personnalisé pour chaque page
+                    page.setDefaultNavigationTimeout(60000); // Timeout de 60 secondes
+                    pages.push(page);
                 }
 
-                // Run tasks on all pages of the browser
+                // Exécuter les tâches sur toutes les pages du navigateur
                 await Promise.all(pages.map((page) => executeTasksOnPage(browser, page)));
             })
         );
     } finally {
-        // Close all browsers
+        // Fermer tous les navigateurs
         for (const browser of browsers) {
             await browser.close();
         }
