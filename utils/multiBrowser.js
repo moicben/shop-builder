@@ -7,7 +7,7 @@ import puppeteer from 'puppeteer';
 export async function launchBrowser() {
     return puppeteer.launch({
         headless: false,
-        defaultViewport: {width: 1440, height: 900},
+        defaultViewport: { width: 1440, height: 900 },
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -37,11 +37,12 @@ export async function launchBrowser() {
 
 /**
  * Manages multiple browser instances and executes tasks in parallel.
- * @param {Array} tasks - An array of tasks to execute. Each task is a function that accepts a browser instance.
+ * @param {Array} tasks - An array of tasks to execute. Each task is a function that accepts a browser instance and a page.
  * @param {number} maxBrowsers - The maximum number of browsers to run simultaneously.
+ * @param {number} [tabsPerBrowser=1] - The number of tabs (pages) each browser should open.
  * @returns {Promise<Array>} - The results of all tasks.
  */
-export async function runWithMultipleBrowsers(tasks, maxBrowsers) {
+export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser = 1) {
     const browsers = [];
     const results = [];
     const taskQueue = [...tasks]; // Copy tasks into a queue
@@ -52,14 +53,14 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers) {
             browsers.push(await launchBrowser());
         }
 
-        // Function to execute tasks sequentially on a browser
-        const executeTasks = async (browser) => {
+        // Function to execute tasks sequentially on a page
+        const executeTasksOnPage = async (browser, page) => {
             while (taskQueue.length > 0) {
                 const task = taskQueue.shift(); // Get the next task
                 if (!task) break;
 
                 try {
-                    const result = await task(browser);
+                    const result = await task(browser, page);
                     results.push(result);
                 } catch (err) {
                     console.error(`Error executing a task:`, err);
@@ -67,8 +68,18 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers) {
             }
         };
 
-        // Execute tasks on all browsers
-        await Promise.all(browsers.map(browser => executeTasks(browser)));
+        // Execute tasks on all browsers with multiple tabs
+        await Promise.all(
+            browsers.map(async (browser) => {
+                const pages = [];
+                for (let i = 0; i < tabsPerBrowser; i++) {
+                    pages.push(await browser.newPage());
+                }
+
+                // Run tasks on all pages of the browser
+                await Promise.all(pages.map((page) => executeTasksOnPage(browser, page)));
+            })
+        );
     } finally {
         // Close all browsers
         for (const browser of browsers) {
