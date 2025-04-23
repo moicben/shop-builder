@@ -131,7 +131,7 @@ async function run() {
     }
 
     // Run tasks with a configurable number of browsers
-    const maxBrowsers = 7; // Adjust this value to control the number of simultaneous browsers
+    const maxBrowsers = 6; // Adjust this value to control the number of simultaneous browsers
     await runWithMultipleBrowsers(tasks, maxBrowsers);
 
     console.log("Product extraction complete.");
