@@ -1,63 +1,6 @@
-import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
-
-/**
- * Launches a Puppeteer browser instance.
- * @returns {Promise<object>} - The Puppeteer browser instance.
- */
-async function launchBrowser() {
-    return puppeteer.launch({
-        headless: false,
-        defaultViewport: null,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--start-maximized'],
-        //executablePath: "/usr/bin/google-chrome-stable"
-    });
-}
-
-/**
- * Manages multiple browser instances and executes tasks in parallel.
- * @param {Array} tasks - An array of tasks to execute. Each task is a function that accepts a browser instance.
- * @param {number} maxBrowsers - The maximum number of browsers to run simultaneously.
- */
-async function runWithMultipleBrowsers(tasks, maxBrowsers) {
-    const browsers = [];
-    const results = [];
-    const taskQueue = [...tasks]; // Copie des tâches dans une file d'attente
-
-    try {
-        // Lancer les navigateurs
-        for (let i = 0; i < maxBrowsers; i++) {
-            browsers.push(await launchBrowser());
-        }
-
-        // Fonction pour exécuter les tâches séquentiellement sur un navigateur
-        const executeTasks = async (browser) => {
-            while (taskQueue.length > 0) {
-                const task = taskQueue.shift(); // Récupère la prochaine tâche
-                if (!task) break;
-
-                try {
-                    //console.log(`Exécution d'une tâche avec un navigateur.`);
-                    const result = await task(browser);
-                    results.push(result);
-                } catch (err) {
-                    console.error(`Erreur lors de l'exécution d'une tâche :`, err);
-                }
-            }
-        };
-
-        // Exécuter les tâches sur tous les navigateurs
-        await Promise.all(browsers.map(browser => executeTasks(browser)));
-    } finally {
-        // Fermer tous les navigateurs
-        for (const browser of browsers) {
-            await browser.close();
-        }
-    }
-
-    return results;
-}
+import { runWithMultipleBrowsers } from '../utils/multiBrowser.js';
 
 /**
  * Extracts products from a given category URL using the selector "a.c8g1eWS".
@@ -67,12 +10,11 @@ async function runWithMultipleBrowsers(tasks, maxBrowsers) {
  */
 async function extractProductsFromCategory(browser, url) {
     const page = await browser.newPage();
-    //console.log(`Navigation vers la catégorie ${url}...`);
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    // Wait for the product selector to appear.
+    // Wait for the product selector to appear
     await page.waitForSelector('a.c8g1eWS', { timeout: 10000 }).catch(() => {
-        console.warn(`Sélecteur "a.c8g1eWS" non trouvé sur ${url}`);
+        console.warn(`Selector "a.c8g1eWS" not found on ${url}`);
     });
 
     const products = await page.evaluate(() => {
@@ -122,19 +64,19 @@ async function run() {
         try {
             allProducts = JSON.parse(fs.readFileSync(productsFilePath, 'utf8'));
         } catch (err) {
-            console.warn("Impossible de parser products.json. On repart sur une extraction vide.");
+            console.warn("Unable to parse products.json. Starting with an empty extraction.");
             allProducts = [];
         }
     }
 
-    // Créer un ensemble des URLs de catégories déjà extraites
+    // Create a set of already extracted category URLs
     const extractedCategoryUrls = new Set(allProducts.map(item => item.categoryUrl));
 
     const tasks = [];
     for (const hub of categoriesData) {
         for (const category of hub.categories) {
             if (extractedCategoryUrls.has(category.url)) {
-                console.log(`Catégorie "${category.title}" déjà extraite. On passe.`);
+                console.log(`Category "${category.title}" already extracted. Skipping.`);
                 continue;
             }
 
@@ -148,32 +90,32 @@ async function run() {
                         categoryUrl: category.url,
                         products: products
                     });
-                    console.log(`Extrait ${products.length} produit(s) de la catégorie "${category.title}"`);
+                    console.log(`Extracted ${products.length} product(s) from category "${category.title}"`);
 
-                    // Mise à jour du fichier products.json après chaque extraction de catégorie
+                    // Update products.json after each category extraction
                     fs.writeFileSync(productsFilePath, JSON.stringify(allProducts, null, 2), 'utf8');
 
-                    // Calculer et afficher la progression
+                    // Calculate and display progress
                     const totalCategories = categoriesData.reduce((sum, hub) => sum + hub.categories.length, 0);
                     const completedCategories = allProducts.length;
                     const progress = Math.round((completedCategories / totalCategories) * 100);
                     const hubIndex = categoriesData.indexOf(hub) + 1;
                     const categoryIndex = hub.categories.indexOf(category) + 1;
-                    console.log(`[${progress}%] Hub ${hubIndex}/${categoriesData.length}, Catégorie ${categoryIndex}/${hub.categories.length}`);
+                    console.log(`[${progress}%] Hub ${hubIndex}/${categoriesData.length}, Category ${categoryIndex}/${hub.categories.length}`);
                 } catch (err) {
-                    console.error(`Erreur lors de l'extraction des produits de "${category.title}":`, err);
+                    console.error(`Error extracting products from "${category.title}":`, err);
                 }
             });
         }
     }
 
     // Run tasks with a configurable number of browsers
-    const maxBrowsers = 5; // Change this value to control the number of simultaneous browsers
+    const maxBrowsers = 5; // Adjust this value to control the number of simultaneous browsers
     await runWithMultipleBrowsers(tasks, maxBrowsers);
 
-    console.log("Extraction des produits complète. Résultats sauvegardés dans", productsFilePath);
+    console.log("Product extraction complete. Results saved in", productsFilePath);
 }
 
 run().catch(err => {
-    console.error("Erreur durant l'extraction des produits :", err);
+    console.error("Error during product extraction:", err);
 });
