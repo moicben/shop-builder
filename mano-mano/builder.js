@@ -1,0 +1,1 @@
+//xvfb-run -a node mano-mano/extractProducts.js 
