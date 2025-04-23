@@ -1,7 +1,7 @@
 [
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1745395247.0752,
+    "expirationDate": 1745416616.151621,
     "hostOnly": false,
     "httpOnly": true,
     "name": "__cf_bm",
@@ -10,12 +10,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "4Yyi_1coUCaNyqZwqgGw1bY8Bohl3P2n7LjGW4RW6fQ-1745393468-1.0.1.1-AT1x8KvjwNI0TPYVGpYd7097YKM6gEjUt314S.x7KM58LlpbBbpmaAsRniDwEpKq6BlWj8eg87v.KTDegpiDhDU8ZnV6DpXWSUmFEd4KjOPOs9gDa2s8h9Kih1Ckgkw6",
+    "value": "6DWD926IjhOD7Axty_G0LIY2AjoZJ81YdpZXoJD1zVw-1745414837-1.0.1.1-Igyx56a_WwO9U8RjhONqAK91oRoBJG_hJnsDXhJLVNx6gmWMtKGZ3yjyD.vWp5h4wSGDgn_PctjBh46Hnn9sL8Iz1_.Vxa.mbQB7W80Xe2ee9VwpzzmHM6Miw36ZESa_",
     "id": 1
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1779090458,
+    "expirationDate": 1779091647,
     "hostOnly": false,
     "httpOnly": false,
     "name": "_ga",
@@ -29,7 +29,7 @@
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1779090462,
+    "expirationDate": 1779091647,
     "hostOnly": false,
     "httpOnly": false,
     "name": "_ga_6WCFY7KGNT",
@@ -38,7 +38,7 @@
     "secure": false,
     "session": false,
     "storeId": "0",
-    "value": "GS1.1.1745393450.5.1.1745394462.56.0.0",
+    "value": "GS1.1.1745393450.5.1.1745395647.60.0.0",
     "id": 3
 },
 {
@@ -57,7 +57,7 @@
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1745480858,
+    "expirationDate": 1745482048,
     "hostOnly": false,
     "httpOnly": false,
     "name": "_uetsid",
@@ -71,7 +71,7 @@
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1779090458,
+    "expirationDate": 1779091648,
     "hostOnly": false,
     "httpOnly": false,
     "name": "_uetvid",
@@ -85,7 +85,7 @@
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1779440572,
+    "expirationDate": 1778938016,
     "hostOnly": false,
     "httpOnly": false,
     "name": "ABTasty",
@@ -94,26 +94,12 @@
     "secure": false,
     "session": false,
     "storeId": "0",
-    "value": "uid=48hjh0qh4at4f5j2&fst=1745312572236&pst=1745383112864&cst=1745393450019&ns=5&pvt=54&pvis=2&th=",
+    "value": "uid=48hjh0qh4at4f5j2&fst=1745312572236&pst=1745383112864&cst=1745393450019&ns=5&pvt=55&pvis=3&th=",
     "id": 7
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1745396257,
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "ABTastySession",
-    "path": "/",
-    "sameSite": "lax",
-    "secure": false,
-    "session": false,
-    "storeId": "0",
-    "value": "mrasn=&lp=https%253A%252F%252Fwww.manomano.fr%252F",
-    "id": 8
-},
-{
-    "domain": ".manomano.fr",
-    "expirationDate": 1776930462,
+    "expirationDate": 1776931648,
     "hostOnly": false,
     "httpOnly": false,
     "name": "AMP_eb40164749",
@@ -122,12 +108,12 @@
     "secure": false,
     "session": false,
     "storeId": "0",
-    "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJmMWEwZWQyZi1hODc5LTQ1NDAtYWIwZC1kY2RkMzQ4MmQ0NGIlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzQ1MzkzNDUxMDkzJTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc0NTM5NDQ2Mjg3OCUyQyUyMmxhc3RFdmVudElkJTIyJTNBMjUxJTJDJTIycGFnZUNvdW50ZXIlMjIlM0EwJTdE",
-    "id": 9
+    "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJmMWEwZWQyZi1hODc5LTQ1NDAtYWIwZC1kY2RkMzQ4MmQ0NGIlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzQ1MzkzNDUxMDkzJTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc0NTM5NTY0ODAzNSUyQyUyMmxhc3RFdmVudElkJTIyJTNBMjU1JTJDJTIycGFnZUNvdW50ZXIlMjIlM0EwJTdE",
+    "id": 8
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1779558460,
+    "expirationDate": 1779559649,
     "hostOnly": false,
     "httpOnly": false,
     "name": "cto_bundle",
@@ -136,8 +122,8 @@
     "secure": false,
     "session": false,
     "storeId": "0",
-    "value": "8CFzb19GYzRnQ0R2RjY0NG1xdXNBYjRpJTJGNWZjSkU1JTJGRWpiUmdLVTZhblk3SmJIcnYybGZUaUh3OE5FdEJpRkdpNWZMU1NFJTJGYnhTTFBTVVV5RjdMYTNvQ2J6ckJTNUZXcDF0TEtwV29zalRuamRhU3h6RSUyRmVZWW0lMkZFS3dWJTJGVCUyRldWJTJGJTJGS25yMndWMWtMb0glMkZ6cEI5cnJmaVpPQSUzRCUzRA",
-    "id": 10
+    "value": "nATDXF9GYzRnQ0R2RjY0NG1xdXNBYjRpJTJGNVRuRTNFdXRHTTExY0JzNHR1M0N5MDFjSUJUNGRCMlY2Unc2a20xcEJwcW1yTnJKc1daSjFXcEhBdDl4dGw0WWs1NVZtVlNRbVltc054SmJwUHh3Nk41S0R3eUtyajA3ZUlENmp5UG5aNjJNR0dmekh5Y3FCUjFIQktoV2YzQTdaUSUzRCUzRA",
+    "id": 9
 },
 {
     "domain": ".manomano.fr",
@@ -151,7 +137,7 @@
     "session": false,
     "storeId": "0",
     "value": "eyJ1c2VyX2lkIjoiMTk2NWNiYzAtYWJkYi02ODAzLTg5MGQtNjhhZTk5MjFiMjM5IiwiY3JlYXRlZCI6IjIwMjUtMDQtMjJUMDk6MDI6MjkuNTY1WiIsInVwZGF0ZWQiOiIyMDI1LTA0LTIyVDA5OjA2OjM4LjY0OVoiLCJ2ZW5kb3JzIjp7ImVuYWJsZWQiOlsiYzp2ZW5kb3JuZWMtTGFjMkJXNEQiLCJjOnZlbmRvcnN0YS1hd2ZUVUNBUCIsImM6dmVuZG9ycHJlLWNGaVhEeEhLIiwiYzp2ZW5kb3JtYXItQUFHdFBBSGYiXX0sInB1cnBvc2VzIjp7ImVuYWJsZWQiOlsic3RhdGlzdGljcyIsInVzZXJQcmVmZXJlbmNlcyIsInBlcnNvbmFsaXNlZEFkdmVydGlzaW5nIl19LCJ2ZXJzaW9uIjoyfQ==",
-    "id": 11
+    "id": 10
 },
 {
     "domain": ".manomano.fr",
@@ -165,7 +151,7 @@
     "session": false,
     "storeId": "0",
     "value": "CQQRJgAQQRJgAAHABBENBmFgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA",
-    "id": 12
+    "id": 11
 },
 {
     "domain": ".manomano.fr",
@@ -179,7 +165,7 @@
     "session": false,
     "storeId": "0",
     "value": "18b184ca-c721-4a1f-acca-b47d446f83c9",
-    "id": 13
+    "id": 12
 },
 {
     "domain": ".manomano.fr",
@@ -192,11 +178,11 @@
     "session": true,
     "storeId": "0",
     "value": "https%3A%2F%2Fwww.manomano.fr",
-    "id": 14
+    "id": 13
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1776857880.229771,
+    "expirationDate": 1776931644.883251,
     "hostOnly": false,
     "httpOnly": false,
     "name": "mm_flags",
@@ -205,12 +191,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "{\"category\":\"9558c988\",\"home\":\"7dc22ec2\",\"mass-landing\":\"845f711c\",\"product-page\":\"dc7e470d\",\"search\":\"1b545720\",\"other\":\"c2c0c488\"}",
-    "id": 15
+    "value": "{\"category\":\"9558c988\",\"home\":\"7dc22ec2\",\"mass-landing\":\"845f711c\",\"product-page\":\"dc7e470d\",\"search\":\"1b545720\",\"other\":\"90833ba5\"}",
+    "id": 14
 },
 {
     "domain": ".manomano.fr",
-    "expirationDate": 1776857880.229699,
+    "expirationDate": 1776931644.883133,
     "hostOnly": false,
     "httpOnly": false,
     "name": "mm_flags_version",
@@ -219,8 +205,8 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "c2c0c488",
-    "id": 16
+    "value": "90833ba5",
+    "id": 15
 },
 {
     "domain": ".manomano.fr",
@@ -234,7 +220,7 @@
     "session": false,
     "storeId": "0",
     "value": "47ccbe59-fd6e-4476-8c27-4610349150c0",
-    "id": 17
+    "id": 16
 },
 {
     "domain": ".manomano.fr",
@@ -246,8 +232,8 @@
     "secure": true,
     "session": true,
     "storeId": "0",
-    "value": "b8324fe4a37fd9ed8cbcff67101c9c8f11181c88d251066a6d99bfdba4ad0d4c%7Cb26d0c25b501ee7809e277f3662b211a9dad485ed42ab38bfdabbf5473a4f9d9",
-    "id": 18
+    "value": "a401781474cc362c37b110fd1a9b06db66aacc8ab06bfa3d11ee57d3861c5366%7Ca379b6f09e9e8fc1329fd4cf0f00dc17dc8a3c5715830581485f1305a314f5b8",
+    "id": 17
 },
 {
     "domain": ".manomano.fr",
@@ -261,7 +247,7 @@
     "session": false,
     "storeId": "0",
     "value": "default",
-    "id": 19
+    "id": 18
 },
 {
     "domain": ".manomano.fr",
@@ -275,33 +261,7 @@
     "session": false,
     "storeId": "0",
     "value": "4",
-    "id": 20
-},
-{
-    "domain": ".manomano.fr",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "smc_session_id",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "upCxnDdbJW7PBM0T7YswuyMjEkRDLLpl",
-    "id": 21
-},
-{
-    "domain": ".manomano.fr",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "smc_spv",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "2",
-    "id": 22
+    "id": 19
 },
 {
     "domain": ".manomano.fr",
@@ -315,7 +275,7 @@
     "session": false,
     "storeId": "0",
     "value": "eyJpZCI6NjY4NywibmFtZSI6Im1hbm9tYW5vLmZyIn0%3D",
-    "id": 23
+    "id": 20
 },
 {
     "domain": ".manomano.fr",
@@ -329,7 +289,7 @@
     "session": false,
     "storeId": "0",
     "value": "60",
-    "id": 24
+    "id": 21
 },
 {
     "domain": ".manomano.fr",
@@ -343,24 +303,11 @@
     "session": false,
     "storeId": "0",
     "value": "1745312573957352",
-    "id": 25
-},
-{
-    "domain": ".manomano.fr",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "smct_session",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "%7B%22s%22%3A1745393453085%2C%22l%22%3A1745394488787%2C%22lt%22%3A1745394488787%2C%22t%22%3A91%2C%22p%22%3A19%7D",
-    "id": 26
+    "id": 22
 },
 {
     "domain": "www.manomano.fr",
-    "expirationDate": 1776930458,
+    "expirationDate": 1776931647,
     "hostOnly": true,
     "httpOnly": false,
     "name": "__rtbh.lid",
@@ -369,12 +316,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "%7B%22eventType%22%3A%22lid%22%2C%22id%22%3A%22j15lKIyssHkv8uvpSXKN%22%2C%22expiryDate%22%3A%222026-04-23T07%3A47%3A38.480Z%22%7D",
-    "id": 27
+    "value": "%7B%22eventType%22%3A%22lid%22%2C%22id%22%3A%22j15lKIyssHkv8uvpSXKN%22%2C%22expiryDate%22%3A%222026-04-23T08%3A07%3A27.669Z%22%7D",
+    "id": 23
 },
 {
     "domain": "www.manomano.fr",
-    "expirationDate": 1776930459,
+    "expirationDate": 1776931647,
     "hostOnly": true,
     "httpOnly": false,
     "name": "__rtbh.sid",
@@ -383,12 +330,12 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "%7B%22eventType%22%3A%22sid%22%2C%22id%22%3A%2247ccbe59-fd6e-4476-8c27-4610349150c0%22%2C%22expiryDate%22%3A%222026-04-23T07%3A47%3A39.514Z%22%7D",
-    "id": 28
+    "value": "%7B%22eventType%22%3A%22sid%22%2C%22id%22%3A%2247ccbe59-fd6e-4476-8c27-4610349150c0%22%2C%22expiryDate%22%3A%222026-04-23T08%3A07%3A27.864Z%22%7D",
+    "id": 24
 },
 {
     "domain": "www.manomano.fr",
-    "expirationDate": 1776930459,
+    "expirationDate": 1776931647,
     "hostOnly": true,
     "httpOnly": false,
     "name": "__rtbh.uid",
@@ -397,7 +344,7 @@
     "secure": true,
     "session": false,
     "storeId": "0",
-    "value": "%7B%22eventType%22%3A%22uid%22%2C%22id%22%3A%22%22%2C%22expiryDate%22%3A%222026-04-23T07%3A47%3A39.515Z%22%7D",
-    "id": 29
+    "value": "%7B%22eventType%22%3A%22uid%22%2C%22id%22%3A%22%22%2C%22expiryDate%22%3A%222026-04-23T08%3A07%3A27.865Z%22%7D",
+    "id": 25
 }
 ]
