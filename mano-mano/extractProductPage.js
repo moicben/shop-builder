@@ -1,15 +1,23 @@
 import fs from 'fs';
 import path from 'path';
 import { runWithMultipleBrowsers } from '../utils/multiBrowser.js';
+import { importCookies } from '../utils/importCookies.js';
 
 /**
  * Extracts detailed product information from a product page.
  * @param {object} browser - The Puppeteer browser instance.
  * @param {string} url - The product URL.
+ * @param {string} cookieFilePath - The path to the JSON file containing cookies.
  * @returns {Promise<object>} - Object containing detailed product information.
  */
-async function extractProductDetails(browser, url) {
+async function extractProductDetails(browser, url, cookieFilePath) {
     const page = await browser.newPage();
+
+    // Import cookies if a cookie file is provided
+    if (cookieFilePath) {
+        await importCookies(page, cookieFilePath);
+    }
+
     await page.goto(url, { waitUntil: 'networkidle2' });
 
     const productDetails = await page.evaluate(async () => {
@@ -24,11 +32,21 @@ async function extractProductDetails(browser, url) {
         }
 
         // Scroll to load content
-        window.scrollBy(0, 1600);
+        window.scrollBy(0, 2400);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Get images from the primary selector
+        let images = getImages('body > div.c91M7oc > div > div > div > div.PDnmYj > aside > button > img');
+
+        // If no images are found, use the fallback selector
+        if (images.length === 0) {
+            images = [document.querySelector('.c9uNnvv.lBCr9G > img')?.src].filter(Boolean);
+        }
 
         return {
             features: getFeatures('ul.a_I_DU > li'),
-            images: getImages('body > div.c91M7oc > div > div > div > div.PDnmYj > aside > button > img'),
+            images: images,
             details: document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null,
         };
     });
@@ -40,6 +58,7 @@ async function extractProductDetails(browser, url) {
 async function run() {
     const productsFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'products.json');
     const outputDir = path.join(process.cwd(), 'mano-mano', 'json', 'products');
+    const cookieFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'cookies.json'); // Path to your cookie file
 
     // Ensure the output directory exists
     if (!fs.existsSync(outputDir)) {
@@ -63,16 +82,19 @@ async function run() {
             categoryProducts = JSON.parse(fs.readFileSync(categoryFilePath, 'utf8'));
         }
 
+        // Create a set of already scrapped URLs
+        const scrappedUrls = new Set(categoryProducts.map(p => p.url));
+
         for (const product of category.products) {
-            if (categoryProducts.some(p => p.url === product.url)) {
-                continue;
+            if (scrappedUrls.has(product.url)) {
+                continue; // Skip already scrapped products
             }
 
             totalProducts++;
             tasks.push(async (browser) => {
                 try {
                     const { title, url, price, originalPrice } = product;
-                    const productDetails = await extractProductDetails(browser, url);
+                    const productDetails = await extractProductDetails(browser, url, cookieFilePath);
 
                     categoryProducts.push({
                         title,
