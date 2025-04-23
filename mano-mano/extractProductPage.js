@@ -39,8 +39,12 @@ async function extractProductDetails(browser, url, cookieFilePath) {
 
         // If details is not found, wait 4 seconds and try again
         if (!details) {
-            await new Promise(resolve => setTimeout(resolve, 4000));
+            await new Promise(resolve => setTimeout(resolve, 3000));
             details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
+
+            if (!details) {
+                console.log("Details still not found after waiting.");
+            }
         }
 
         // Get images from the primary selector
