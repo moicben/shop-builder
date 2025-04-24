@@ -40,7 +40,7 @@ async function extractProductDetails(page, url, cookieFilePath) {
         let attempts = 0;
         while (!details && attempts < 5) {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN').innerHTML || null;
+            details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
             attempts++;
             if (!details) {
             console.log(`Attempt ${attempts}: Details still not found.`);
