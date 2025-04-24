@@ -95,11 +95,7 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
                 for (let i = 0; i < tabsPerBrowser; i++) {
                     const page = await browser.newPage();
 
-                    // Authentification par proxy (si besoin)
-                    await page.authenticate({
-                        username: proxyUsername,
-                        password: proxyPassword,
-                    });
+                    
 
                     // Configurer un timeout personnalisé pour chaque page
                     page.setDefaultNavigationTimeout(60000); // Timeout de 60 secondes
