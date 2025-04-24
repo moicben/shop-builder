@@ -18,7 +18,7 @@ export async function launchBrowser() {
     return puppeteer.launch({
         headless: false, // Garder le mode non-headless
         defaultViewport: { width: 1440, height: 900 },
-        //executablePath: '/usr/bin/google-chrome-stable', // Chemin vers l'exécutable de Chrome
+        executablePath: '/usr/bin/google-chrome-stable', // Chemin vers l'exécutable de Chrome
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
