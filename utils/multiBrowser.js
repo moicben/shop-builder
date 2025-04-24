@@ -10,7 +10,7 @@ import puppeteer from 'puppeteer';
 const proxyAddress = 'proxy.oculus-proxy.com';
 const proxyPort = '31112';
 const proxyPassword = 'sxjozu794g50';
-const proxyUsername = 'oc-0b3b58f5de2c1506ce227d596c3517f6586af56e3fc513b2c187e07ba94b765e-country-FR-session-94752'
+const proxyUsername = 'oc-0b3b58f5de2c1506ce227d596c3517f6586af56e3fc513b2c187e07ba94b765e-country-FR-session-8e1a1'
 
 
 
@@ -18,7 +18,7 @@ export async function launchBrowser() {
     return puppeteer.launch({
         headless: false, // Garder le mode non-headless
         defaultViewport: { width: 1440, height: 900 },
-        executablePath: '/usr/bin/google-chrome-stable', // Chemin vers l'exécutable de Chrome
+        //executablePath: '/usr/bin/google-chrome-stable', // Chemin vers l'exécutable de Chrome
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -91,11 +91,15 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
         // Exécuter les tâches sur tous les navigateurs avec plusieurs onglets
         await Promise.all(
             browsers.map(async (browser) => {
-                const pages = [];
+                const pages = await browser.pages();
                 for (let i = 0; i < tabsPerBrowser; i++) {
-                    const page = await browser.newPage();
+                    const page = pages[i] || await browser.newPage(); // Utiliser une page existante ou en créer une nouvelle
 
-                    
+                    // Authentification par proxy (si besoin)
+                    await page.authenticate({
+                        username: proxyUsername,
+                        password: proxyPassword,
+                    });
 
                     // Configurer un timeout personnalisé pour chaque page
                     page.setDefaultNavigationTimeout(60000); // Timeout de 60 secondes

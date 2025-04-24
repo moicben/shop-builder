@@ -5,14 +5,12 @@ import { importCookies } from '../utils/importCookies.js';
 
 /**
  * Extracts detailed product information from a product page.
- * @param {object} browser - The Puppeteer browser instance.
+ * @param {object} page - The Puppeteer page instance (créée et configurée dans multiBrowser.js).
  * @param {string} url - The product URL.
  * @param {string} cookieFilePath - The path to the JSON file containing cookies.
  * @returns {Promise<object>} - Object containing detailed product information.
  */
-async function extractProductDetails(browser, url, cookieFilePath) {
-    const page = await browser.newPage();
-
+async function extractProductDetails(page, url, cookieFilePath) {
     // Import cookies if a cookie file is provided
     if (cookieFilePath) {
         await importCookies(page, cookieFilePath);
@@ -37,12 +35,10 @@ async function extractProductDetails(browser, url, cookieFilePath) {
         // Attempt to get the details content immediately
         let details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
 
-        // If details is not found, wait 4 seconds and try again
+        // If details is not found, wait and try again
         if (!details) {
-            //console.log("Details not found, waiting...");
             await new Promise(resolve => setTimeout(resolve, 3000));
             details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
-
             if (!details) {
                 console.log("Details still not found.");
             }
@@ -50,8 +46,6 @@ async function extractProductDetails(browser, url, cookieFilePath) {
 
         // Get images from the primary selector
         let images = getImages('body > div.c91M7oc > div > div > div > div.PDnmYj > aside > button > img');
-
-        // If no images are found, use the fallback selector
         if (images.length === 0) {
             images = [document.querySelector('.c9uNnvv.lBCr9G > img')?.src].filter(Boolean);
         }
@@ -63,14 +57,13 @@ async function extractProductDetails(browser, url, cookieFilePath) {
         };
     });
 
-    await page.close();
     return productDetails;
 }
 
 async function run() {
     const productsFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'products.json');
     const outputDir = path.join(process.cwd(), 'mano-mano', 'json', 'products');
-    const cookieFilePath = path.join(process.cwd(), 'mano-mano', 'cookies.json'); // Path to your cookie file
+    const cookieFilePath = path.join(process.cwd(), 'mano-mano', 'cookies.json');
 
     // Ensure the output directory exists
     if (!fs.existsSync(outputDir)) {
@@ -103,10 +96,12 @@ async function run() {
             }
 
             totalProducts++;
-            tasks.push(async (browser) => {
+            // Notez que la tâche reçoit ici (browser, page) via multiBrowser.js,
+            // ce qui nous permet de déléguer la création/configuration de la page.
+            tasks.push(async (browser, page) => {
                 try {
                     const { title, url, price, originalPrice } = product;
-                    const productDetails = await extractProductDetails(browser, url, cookieFilePath);
+                    const productDetails = await extractProductDetails(page, url, cookieFilePath);
 
                     categoryProducts.push({
                         title,
@@ -131,8 +126,8 @@ async function run() {
     }
 
     // Run tasks with a configurable number of browsers
-    const maxBrowsers = 1; 
-    const tabsPerBrowser = 3; 
+    const maxBrowsers = 1;
+    const tabsPerBrowser = 1;
     await runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser);
 
     console.log("Product extraction complete.");
