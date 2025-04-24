@@ -91,22 +91,25 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
         // Exécuter les tâches sur tous les navigateurs avec plusieurs onglets
         await Promise.all(
             browsers.map(async (browser) => {
-                const pages = await browser.pages();
-                for (let i = 0; i < tabsPerBrowser; i++) {
-                    const page = pages[i] || await browser.newPage(); // Utiliser une page existante ou en créer une nouvelle
+                // Récupérer les pages déjà ouvertes.
+                let pages = await browser.pages();
 
-                    // Authentification par proxy (si besoin)
+                // Si le nombre de pages ouvertes est insuffisant, créer des nouvelles pages.
+                while (pages.length < tabsPerBrowser) {
+                    const newPage = await browser.newPage();
+                    pages.push(newPage);
+                }
+
+                // Authentifier et configurer chaque page.
+                for (const page of pages) {
                     await page.authenticate({
                         username: proxyUsername,
                         password: proxyPassword,
                     });
-
-                    // Configurer un timeout personnalisé pour chaque page
                     page.setDefaultNavigationTimeout(60000); // Timeout de 60 secondes
-                    pages.push(page);
                 }
 
-                // Exécuter les tâches sur toutes les pages du navigateur
+                // Exécuter les tâches sur chacune des pages.
                 await Promise.all(pages.map((page) => executeTasksOnPage(browser, page)));
             })
         );
