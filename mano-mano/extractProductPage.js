@@ -31,16 +31,19 @@ async function extractProductDetails(page, url, cookieFilePath) {
 
         // Scroll to load content
         window.scrollBy(0, 2400);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         // Attempt to get the details content immediately
         let details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
 
         // If details is not found, wait and try again
-        if (!details) {
-            await new Promise(resolve => setTimeout(resolve, 3000));
+        let attempts = 0;
+        while (!details && attempts < 5) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
             details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
+            attempts++;
             if (!details) {
-                console.log("Details still not found.");
+            console.log(`Attempt ${attempts}: Details still not found.`);
             }
         }
 
