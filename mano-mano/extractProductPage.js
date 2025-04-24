@@ -40,7 +40,7 @@ async function extractProductDetails(page, url, cookieFilePath) {
         let attempts = 0;
         while (!details && attempts < 5) {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN')?.innerHTML || null;
+            details = document.querySelector('.Ssfiu-.o2c_dC.yBr4ZN').innerHTML || null;
             attempts++;
             if (!details) {
             console.log(`Attempt ${attempts}: Details still not found.`);
@@ -129,8 +129,8 @@ async function run() {
     }
 
     // Run tasks with a configurable number of browsers
-    const maxBrowsers = 3;
-    const tabsPerBrowser = 5;
+    const maxBrowsers = 1;
+    const tabsPerBrowser = 8;
     await runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser);
 
     console.log("Product extraction complete.");
