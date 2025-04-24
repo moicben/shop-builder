@@ -126,7 +126,7 @@ async function run() {
     }
 
     // Run tasks with a configurable number of browsers
-    const maxBrowsers = 3;
+    const maxBrowsers = 1;
     const tabsPerBrowser = 8;
     await runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser);
 
