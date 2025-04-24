@@ -1,24 +1,21 @@
 import puppeteer from 'puppeteer';
+import { chooseRandomProxy } from './randomProxy.js';
+import proxies from '../mano-mano/isp_proxies.json' assert { type: 'json' };
 
 /**
- * Launches a Puppeteer browser instance.
- * @returns {Promise<object>} - The Puppeteer browser instance.
+ * Lance une instance du navigateur Puppeteer avec un proxy aléatoire.
+ * @returns {Promise<object>} - L'instance du navigateur.
  */
-
-
-// Proxy Configuration 
-const proxyAddress = 'proxy.oculus-proxy.com';
-const proxyPort = '31112';
-const proxyPassword = 'sxjozu794g50';
-const proxyUsername = 'oc-0b3b58f5de2c1506ce227d596c3517f6586af56e3fc513b2c187e07ba94b765e-country-FR-session-8e1a1'
-
-
-
 export async function launchBrowser() {
+
+    // Sélectionne un proxy aléatoire	
+    const proxy = chooseRandomProxy(proxies);
+
+    // Lance le navigateur avec Puppeteer
     return puppeteer.launch({
-        headless: false, // Garder le mode non-headless
+        headless: false,
         defaultViewport: { width: 1440, height: 900 },
-        executablePath: '/usr/bin/google-chrome-stable', // Chemin vers l'exécutable de Chrome
+        //executablePath: '/usr/bin/google-chrome-stable',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -42,7 +39,7 @@ export async function launchBrowser() {
             '--enable-automation',
             '--password-store=basic',
             '--use-mock-keychain',
-            `--proxy-server=${proxyAddress}:${proxyPort}`,
+            `--proxy-server=${proxy.host}:${proxy.port}`,
         ],
     });
 }
@@ -58,7 +55,7 @@ export async function launchBrowser() {
 export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser = 1, maxRetries = 3) {
     const browsers = [];
     const results = [];
-    const taskQueue = tasks.map((task) => ({ task, retries: 0 })); // Ajout des retries pour chaque tâche
+    const taskQueue = tasks.map((task) => ({ task, retries: 0 }));
 
     try {
         // Lancer les navigateurs
@@ -69,17 +66,14 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
         // Fonction pour exécuter les tâches sur une page
         const executeTasksOnPage = async (browser, page) => {
             while (taskQueue.length > 0) {
-                const { task, retries } = taskQueue.shift(); // Récupérer la tâche et son compteur de retries
+                const { task, retries } = taskQueue.shift();
                 if (!task) break;
-
                 try {
-                    const result = await task(browser, page); // Exécuter la tâche
-                    results.push(result); // Ajouter le résultat
+                    const result = await task(browser, page);
+                    results.push(result);
                 } catch (err) {
                     console.error(`Error executing task (retry ${retries}):`, err);
-
                     if (retries < maxRetries) {
-                        // Réinsérer la tâche dans la file d'attente avec un retry incrémenté
                         taskQueue.push({ task, retries: retries + 1 });
                     } else {
                         console.error(`Task failed after ${maxRetries} retries.`);
@@ -88,37 +82,28 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
             }
         };
 
-        // Exécuter les tâches sur tous les navigateurs avec plusieurs onglets
+        // Exécution des tâches sur chaque navigateur et page, avec proxy aléatoire pour l'authentification
         await Promise.all(
             browsers.map(async (browser) => {
-                // Récupérer les pages déjà ouvertes.
                 let pages = await browser.pages();
-
-                // Si le nombre de pages ouvertes est insuffisant, créer des nouvelles pages.
                 while (pages.length < tabsPerBrowser) {
-                    const newPage = await browser.newPage();
-                    pages.push(newPage);
+                    pages.push(await browser.newPage());
                 }
-
-                // Authentifier et configurer chaque page.
                 for (const page of pages) {
+                    const proxy = chooseRandomProxy(proxies);
                     await page.authenticate({
-                        username: proxyUsername,
-                        password: proxyPassword,
+                        username: proxy.login,
+                        password: proxy.password,
                     });
-                    page.setDefaultNavigationTimeout(60000); // Timeout de 60 secondes
+                    page.setDefaultNavigationTimeout(60000);
                 }
-
-                // Exécuter les tâches sur chacune des pages.
                 await Promise.all(pages.map((page) => executeTasksOnPage(browser, page)));
             })
         );
     } finally {
-        // Fermer tous les navigateurs
         for (const browser of browsers) {
             await browser.close();
         }
     }
-
     return results;
 }
