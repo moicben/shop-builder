@@ -91,9 +91,9 @@ export async function runWithMultipleBrowsers(tasks, maxBrowsers, tabsPerBrowser
         // Exécuter les tâches sur tous les navigateurs avec plusieurs onglets
         await Promise.all(
             browsers.map(async (browser) => {
-                const pages = await browser.pages(); // Récupérer les pages existantes
+                const pages = [];
                 for (let i = 0; i < tabsPerBrowser; i++) {
-                    const page = pages[i] || await browser.newPage(); // Utiliser une page existante ou en créer une nouvelle
+                    const page = await browser.newPage();
 
                     // Authentification par proxy (si besoin)
                     await page.authenticate({
