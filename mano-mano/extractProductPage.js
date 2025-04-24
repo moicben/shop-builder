@@ -3,6 +3,8 @@ import path from 'path';
 import { runWithMultipleBrowsers } from '../utils/multiBrowser.js';
 import { importCookies } from '../utils/importCookies.js';
 
+// CHECK COMMANDE : jq -r '.[] | select(.details == null) | .details' mano-mano/json/products/matelas_de_relaxation.json
+
 /**
  * Extracts detailed product information from a product page.
  * @param {object} page - The Puppeteer page instance (créée et configurée dans multiBrowser.js).

@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { chooseRandomProxy } from './randomProxy.js';
-import proxies from '../mano-mano/isp_proxies.json' assert { type: 'json' };
+import proxies from '../mano-mano/proxies/datacenter.json' assert { type: 'json' };
 
 /**
  * Lance une instance du navigateur Puppeteer avec un proxy aléatoire.
