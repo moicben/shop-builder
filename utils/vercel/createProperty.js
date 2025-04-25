@@ -1,5 +1,5 @@
 import fetch from "node-fetch"; // If running on Node <18, otherwise remove this import
-import { fetchData } from "../utils/supabase.js";
+//import { fetchData } from "./../supabase.js";
 
 if (!process.env.VERCEL_TOKEN) {
     throw new Error("VERCEL_TOKEN is not set. Please set it in your environment variables.");
@@ -11,7 +11,7 @@ if (!process.env.VERCEL_TOKEN) {
  * @param {Object} shop - Le shop pour lequel créer la propriété.
  * @returns {Promise<Object>} - Les détails du projet, du déploiement et les infos DNS.
  */
-export async function createProperty(shop) {
+export async function createProperty(shop, repository) {
     console.log(`Création de la propriété Vercel pour le shop: ${JSON.stringify(shop)}...`);
     
     try {
@@ -55,7 +55,7 @@ export async function createProperty(shop) {
             framework: "nextjs",
             gitRepository: {
                 type: "github",
-                repo: "moicben/shop-template"
+                repo: `moicben/${repository}`,
             },
         };
 
@@ -106,7 +106,7 @@ export async function createProperty(shop) {
             },
             body: JSON.stringify({
                 gitSource: {
-                    ref: "main",
+                    ref: "master",
                     repoId: project.link.repoId,
                     type: "github"
                 },
