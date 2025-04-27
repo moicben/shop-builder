@@ -1,4 +1,4 @@
-import { fetchData } from "../utils/supabase.js"; // Assurez-vous que le chemin est correct
+import { fetchData } from "../supabase.js"; // Assurez-vous que le chemin est correct
 
 // test de console.log pour vérifier si le module est chargé correctement
 console.log("Module supabase chargé.");

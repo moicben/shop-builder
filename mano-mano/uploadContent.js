@@ -86,7 +86,7 @@ export async function uploadShop(shopObjects) {
             const productRecord = {
                 id: newProductId,
                 shop_id: shopId,
-                category_id: 16,
+                category_id: 6,
                 title: product.title,
                 desc: product.desc,
                 slug: product.slug,
@@ -108,7 +108,7 @@ export async function uploadShop(shopObjects) {
                 //console.log(`Produit "${product.title}" inséré avec succès pour ${fileName}`);
             }
         }
-        console.log(`${i + 1}/${shopObjects.length} uploadé.`);
+        //console.log(`${i + 1}/${shopObjects.length} uploadé.`);
     }
     
 }

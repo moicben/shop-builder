@@ -2,7 +2,7 @@ import { supabase } from "../supabase.js";
 
 async function clearSupabase() {
   // Liste des tables à nettoyer (excluant "shops")
-  const tables = ["posts", "contents", "products", "categories", "reviews"];
+  const tables = ["posts", "contents", "products", "categories", "reviews", "brands"] 
 
   for (const table of tables) {
     const { error } = await supabase

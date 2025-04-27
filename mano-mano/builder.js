@@ -5,69 +5,70 @@ import { uploadShop } from "./uploadContent.js";
 import { createProperty } from "./../utils/vercel/createProperty.js";
 import { indexSite } from "../utils/google/indexSite.js";
 
+// Définition du répertoire contenant les fichiers produits
+const productsDir = path.join(process.cwd(), "mano-mano", "json", "products");
+
 async function main() {
     console.log("--- Lancement du builder Mano Mano ---");
+    
+    // Étape 0 : Récupération de la liste des fichiers
+    const files = fs.readdirSync(productsDir).filter(file => file.endsWith('.json'));
+    console.log(`Nombre de fichiers à traiter: ${files.length}`);
 
-    // Étape 1 : Génération des données via createContent.js
-    console.log("-> [1/5] Rédaction des contenus <-");
-    const shopObjects = await createContent();
+    // Boucle générale : pour chaque fichier traité, on exécute toutes les étapes
+    for (let i = 0; i < files.length; i++) {
+        const fileName = files[i];
+        console.log(`\n=== Traitement du fichier ${fileName} (${i + 1}/${files.length}) ===`);
 
-    // Étape 2 : Upload des shops et contenus avec uploadContent.js
-    console.log("-> [2/5] Upload des shops sur Supabase <-");
-    await uploadShop(shopObjects);
+        // Étape 1 : Génération du contenu pour le fichier
+        console.log("-> [1/5] Création du contenu");
+        const shopObj = await createContent(fileName);
 
-    // Étape 3 : Créer la propriété Vercel pour les shops traités
-    console.log("-> [3/5] Déploiement des propriétés Vercel <-");
-    for (let i = 0; i < shopObjects.length; i++) {
-        const shopObj = shopObjects[i];
+        // Étape 2 : Upload du shop et contenus
+        console.log("-> [2/5] Upload sur Supabase");
+        // On passe un tableau contenant uniquement shopObj à uploadShop
+        await uploadShop([shopObj]);
+
+        // Étape 3 : Création de la propriété Vercel
         const shop = shopObj.shopData;
         if (!shop.id) {
-            console.warn(`Le shop '${shop.name}' n'a pas d'ID, on ne crée pas de propriété.`);
-            continue;
+            console.warn(`-> [3/5] Le shop '${shop.name}' n'a pas d'ID, création de propriété ignorée.`);
+        } else {
+            console.log("-> [3/5] Déploiement sur Vercel");
+            try {
+                await createProperty(shop, "mano-store");
+                //console.log(`[3/5] Propriété déployée pour '${shop.name}'.`);
+            } catch (err) {
+                console.error(`[3/5] Erreur de création de propriété pour '${shop.name}':`, err);
+            }
         }
-        try {
-            const result = await createProperty(shop, "mano-store");
-            console.log(`${i + 1}/${shopObjects.length} deployée.`);
-        } catch (err) {
-            console.error(`Erreur lors de la création de la propriété pour le shop ${shop.id}:`, err);
-        }
-    }
 
-    // Étape 4 : Indexer les shops avec Google Search Console via indexSite
-    console.log("-> [4/5] Indexation Search Console des shops <-");
-    for (let i = 0; i < shopObjects.length; i++) {
-        const shopObj = shopObjects[i];
-        const shop = shopObj.shopData;
+        // Étape 4 : Indexation via Google Search Console
         if (!shop.domain) {
-            console.warn(`Le shop '${shop.name}' n'a pas de domaine, indexation annulée.`);
-            continue;
+            console.warn(`-> [4/5] Le shop '${shop.name}' n'a pas de domaine, indexation annulée.`);
+        } else {
+            console.log("-> [4/5] Indexation du shop");
+            try {
+                await indexSite(shop.domain);
+                //console.log(`[4/5] Shop indexé: ${shop.domain}`);
+            } catch (err) {
+                console.error(`[4/5] Erreur lors de l'indexation du shop '${shop.name}':`, err);
+            }
         }
-        try {
-            // console.log(`Indexation du shop '${shop.name}' (https://${shop.domain})...`);
-            await indexSite(shop.domain);
-            console.log(`${i + 1}/${shopObjects.length} indexé.`);
-        } catch (err) {
-            console.error(`Erreur lors de l'indexation du shop ${shop.id}:`, err);
-        }
-    }
 
-    // Étape 5 : Déplacer les fichiers JSON traités dans le sous-répertoire /uploaded
-    console.log("-> [5/5] Déplacement des fichiers JSON traités <-");
-    const productsDir = path.join(process.cwd(), "mano-mano", "json", "products");
-    const uploadedDir = path.join(productsDir, "uploaded");
-    if (!fs.existsSync(uploadedDir)) {
-        fs.mkdirSync(uploadedDir);
-    }
-    for (let i = 0; i < shopObjects.length; i++) {
-        const shopObj = shopObjects[i];
-        const fileName = shopObj.fileName;
+        // Étape 5 : Déplacement du fichier JSON traité dans le sous-répertoire /uploaded
+        console.log("-> [5/5] Déplacement du fichier JSON");
+        const uploadedDir = path.join(productsDir, "uploaded");
+        if (!fs.existsSync(uploadedDir)) {
+            fs.mkdirSync(uploadedDir);
+        }
         const sourcePath = path.join(productsDir, fileName);
         const destinationPath = path.join(uploadedDir, fileName);
         try {
             fs.renameSync(sourcePath, destinationPath);
-            console.log(`${i + 1}/${shopObjects.length} fichier '${fileName}' déplacé.`);
+            //console.log(`[5/5] Fichier '${fileName}' déplacé.`);
         } catch (err) {
-            console.error(`Erreur lors du déplacement du fichier ${fileName}:`, err);
+            console.error(`[5/5] Erreur lors du déplacement du fichier '${fileName}':`, err);
         }
     }
 }
