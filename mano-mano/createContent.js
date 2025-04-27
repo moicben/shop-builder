@@ -72,14 +72,14 @@ export async function createContent() {
       categoryData = await generateContent(fileName, fileContent);
       //console.log("Contenu généré :", categoryData);
     } catch (err) {
-      console.error(`Erreur lors de la génération du contenu pour ${fileName}:`, err);
+      console.error(`Erreur génération de contenu, retry`)// ${fileName}:`, err);
       // Réessayer au cas de problème
       try {
-        console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
+        //console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
         categoryData = await generateContent(fileName, fileContent);
-        console.log("Contenu généré après nouvelle tentative :", categoryData);
+        //console.log("Contenu généré après nouvelle tentative :", categoryData);
       } catch (retryErr) {
-        console.error(`Nouvel échec lors de la génération du contenu pour ${fileName}:`, retryErr);
+        console.error(`Nouvel échec génération pour ${fileName}:`)//, retryErr);
         continue; // Passe au fichier suivant en cas d'échec répété
       }
     }

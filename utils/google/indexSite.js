@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { google } from 'googleapis';
 import dotenv from 'dotenv';
-import { getAccessToken } from './getRefreshToken.js';
+import { getAccessToken } from './getAccessToken.js';
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
 import fetch from "node-fetch"; // If running on Node <18, otherwise remove this import
-//import { fetchData } from "./../supabase.js";
+import { getAccessToken } from "../google/getAccessToken.js";
 
 if (!process.env.VERCEL_TOKEN) {
     throw new Error("VERCEL_TOKEN is not set. Please set it in your environment variables.");
@@ -12,8 +12,6 @@ if (!process.env.VERCEL_TOKEN) {
  * @returns {Promise<Object>} - Les détails du projet, du déploiement et les infos DNS.
  */
 export async function createProperty(shop, repository) {
-    //console.log(`Création de la propriété Vercel pour le shop: ${JSON.stringify(shop)}...`);
-    
     try {
         const apiKey = process.env.VERCEL_TOKEN;
             
@@ -34,20 +32,20 @@ export async function createProperty(shop, repository) {
                 },
                 {
                     key: "SUPABASE_URL",
-                    value: "https://bpybtzxqypswjiizkzja.supabase.co",
+                    value: process.env.SUPABASE_URL,
                     target: ["production"],
                     type: "plain"
                 },
                 {
                     key: "SUPABASE_KEY",
-                    value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJweWJ0enhxeXBzd2ppaXpremphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NDE1NjYsImV4cCI6MjA1ODExNzU2Nn0.08Uh9FjenwJ23unlZxyXDDDf4ZurGPjZai1cKBB6r9o",
+                    value: process.env.SUPABASE_KEY,
                     target: ["production"],
                     type: "plain"
                 },
                 {
                     key: "GOOGLE_REFRESH_TOKEN_WEBMASTER",
-                    value: "ya29.a0AZYkNZib5XVH1kdPi2fWTBJUCHWB9QSz6EPWFQcNRKIsW-JFc-xVrAPIV33iHZvSXaTBUsFuNyBqk9S_d8D6hmDWM4DhFlnS_VFfgsa0aSlVzKQ1JcM4JuFsGpvyl9Jdg9na2OLq4YuXKPTM2W109OtlAWXAfSx9xZPZBevkAQaCgYKAeASARESFQHGX2MiAAj0qd-X2w4IyX2_ja3slg0177",
-                    target: ["production"],	
+                    value: await getAccessToken(),
+                    target: ["production"],
                     type: "plain"
                 }
             ],
@@ -74,7 +72,6 @@ export async function createProperty(shop, repository) {
         }
         
         const project = await res.json();
-        //console.log(`Projet créé avec succès pour "${shop.name}"`)//:`, project);
 
         // Ajouter un domaine personnalisé
         const domainRes = await fetch(`https://api.vercel.com/v9/projects/${project.id}/domains`, {
@@ -94,7 +91,6 @@ export async function createProperty(shop, repository) {
         }
 
         const domainResult = await domainRes.json();
-        //console.log(`Domaine personnalisé "${shop.domain}" ajouté avec succès:`)//, domainResult);
 
         // Déployer le projet
         const deployRes = await fetch("https://api.vercel.com/v13/deployments", {
@@ -123,7 +119,6 @@ export async function createProperty(shop, repository) {
         }
         
         const deployment = await deployRes.json();
-        //console.log(`Déploiement créé pour "${shop.name}":`)//, deployment);
         
         // Informations DNS pour pointer vers Vercel (exemple)
         const vercelDnsInfo = {
