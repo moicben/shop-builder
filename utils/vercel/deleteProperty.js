@@ -25,24 +25,26 @@ async function deleteProject(projectId) {
 
     if (!res.ok) {
         const errData = await res.json();
-        throw new Error(`Échec de la suppression du projet : ${res.status} - ${JSON.stringify(errData)}`);
+        throw new Error(`Échec de la suppression du projet ${projectId}: ${res.status} - ${JSON.stringify(errData)}`);
     }
 
-    console.log("Projet supprimé avec succès.");
+    console.log(`Projet ${projectId} supprimé avec succès.`);
 }
 
 async function main() {
     const args = process.argv.slice(2);
     if (args.length === 0) {
-        console.error("Veuillez fournir l'ID du projet à supprimer en argument.");
+        console.error("Veuillez fournir au moins un ID de projet à supprimer en argument.");
         process.exit(1);
     }
-    const projectId = args[0];
-    try {
-        await deleteProject(projectId);
-    } catch (error) {
-        console.error("Erreur :", error);
-        process.exit(1);
+    
+    // Suppression de chaque projet passé en argument
+    for (const projectId of args) {
+        try {
+            await deleteProject(projectId);
+        } catch (error) {
+            console.error("Erreur :", error);
+        }
     }
 }
 

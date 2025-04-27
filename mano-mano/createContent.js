@@ -20,19 +20,23 @@ const categoriesFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'catego
 export async function generateContent(fileName, productsContent) {
   const prompt = `À partir du fichier JSON de produits "${fileName}" dont le contenu est ${JSON.stringify(productsContent).slice(0, 1000)}..., génère en français :
 - Un titre de catégorie optimisé pour le SEO (maximum 50 caractères)
-- Une description de la catégorie explicite et aguicheuse (260 à 320 caractères)
+- Une description de la catégorie explicite et aguicheuse (200 à 300 caractères)
+- Un slug le plus simple possible pour le sous-domaine basé sur le nom du fichier (maximum 22 caractères)
 
-Réponds uniquement en JSON au format:
+Réponds uniquement en JSON dans le format suivant exactement :
 {
   "title": "...",
-  "description": "..."
+  "description": "...",
+  "slug": "..."
 }`;
+
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       { role: 'system', content: 'Tu es un assistant de traduction de contenu e-commerce.' },
       { role: 'user', content: prompt }
     ],
+    temperature: 0.5,
   });
   const content = response.choices[0].message.content.trim();
   try {
@@ -68,16 +72,9 @@ export async function createContent(fileName) {
     }
   }
 
-  // Prépare shopData
-  const slugSubDomain = fileName
-    .replace(/\.json$/, '')
-    .toLowerCase()
-    .replace(/_/g, '-')
-    .replace(/--/g, '-')
-    .slice(0, 26);
   const shopData = {
     name: `${categoryData.title} Mano Mano`,
-    domain: `${slugSubDomain}.mano-mano.store`
+    domain: `${categoryData.slug}.mano-mano.store`
   };
 
   // Récupère l'URL du premier produit
