@@ -70,14 +70,14 @@ export async function createContent() {
     let categoryData;
     try {
       categoryData = await generateContent(fileName, fileContent);
-      console.log("Contenu généré :", categoryData);
+      //console.log("Contenu généré :", categoryData);
     } catch (err) {
       console.error(`Erreur génération de contenu, retry`)// ${fileName}:`, err);
       // Réessayer au cas de problème
       try {
-        console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
+        //console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
         categoryData = await generateContent(fileName, fileContent);
-        console.log("Contenu généré après nouvelle tentative :", categoryData);
+        //console.log("Contenu généré après nouvelle tentative :", categoryData);
       } catch (retryErr) {
         console.error(`Nouvel échec génération pour ${fileName}:`)//, retryErr);
         continue; // Passe au fichier suivant en cas d'échec répété
@@ -102,11 +102,11 @@ export async function createContent() {
     if (fileContent.length > 0 && fileContent[0].url) {
       productUrl = fileContent[0].url;
     }
-    console.log("URL du 1er produit :", productUrl);
+    //console.log("URL du 1er produit :", productUrl);
 
     // Obtenir bannerUrl via le premnier produit
     const categoryImage = await findBanner(productUrl);
-    console.log("Image de la catégorie :", categoryImage);
+    //console.log("Image de la catégorie :", categoryImage);
     
     // Prépare contentData en utilisant categoryData généré par OpenAI et la banner récupérée
     const contentData = {
@@ -115,45 +115,51 @@ export async function createContent() {
       heroMedia: categoryImage
     };
 
-    // Bouclage des produits
 
-    // Prépare productsData en convertissant les prix
+
+    // BOUCLAGE PRODUIT : Prépararation de "productsData"
     const productsData = fileContent.map(product => {
-      const originalPrice = parseFloat(product.originalPrice.replace(',', '.').replace(/\s|\u202f/g, ''));
-      const discountedPrice = parseFloat(product.price.replace(',', '.').replace(/\s|\u202f/g, ''));
-      console.log(`Produit: ${product.title}, Prix extrait: ${product.price}, Prix converti: ${discountedPrice}`);
+      try {
+        const originalPrice = parseFloat(product.originalPrice.replace(',', '.').replace(/\s|\u202f/g, ''));
+        const discountedPrice = parseFloat(product.price.replace(',', '.').replace(/\s|\u202f/g, ''));
+        //console.log(`Produit: ${product.title}, Prix extrait: ${product.price}, Prix converti: ${discountedPrice}`);
 
-      // Création de slug pour chaque produit
-      let productSlug = product.title
-                .toLowerCase()
-                .replace(/\s+/g, "-")
-                .replace(/--/g, "-")
-                .replace(/[^a-z0-9-]/g, "")
-                .slice(0, 99);
+        // Création de slug pour chaque produit
+        let productSlug = product.title
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(/--/g, "-")
+                  .replace(/[^a-z0-9-]/g, "")
+                  .slice(0, 99);
 
 
-      // Clean des features
-      //product.desc = product.desc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/"/g,'').trim();
+        // Clean des features
+        //product.desc = product.desc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/"/g,'').trim();
 
-      // Changement URL des images
-      product.images = product.images.map(image => {
-        return image.replace(/\/T\//g, '/L/');
-      });
+        // Changement URL des images
+        product.images = product.images.map(image => {
+          return image.replace(/\/T\//g, '/L/');
+        });
 
-      // clean des details
-      product.details = product.details.replace(/<p>"<\/p>/g, "");
-              
+        // clean des details
+        product.details ? product.details.replace(/<p>"<\/p>/g, "") : null
 
-      return {
-        title: product.title,
-        //desc: product.features,
-        slug: productSlug,
-        images: product.images,
-        more1: product.details,
-        price: discountedPrice,     // prix converti (price)
-        discounted: originalPrice,  // originalPrice converti (discounted)
-        metaTitle: product.title
-      };
+                
+
+        return {
+          title: product.title,
+          //desc: product.features,
+          slug: productSlug,
+          images: product.images,
+          more1: product.details,
+          price: discountedPrice,     // prix converti (price)
+          discounted: originalPrice,  // originalPrice converti (discounted)
+          metaTitle: product.title
+        };
+      } catch (err) {
+        console.error(`Erreur récupération produit : ${product.title}`)//:`, err);
+        return null; // Ignore le produit en cas d'erreur
+      }
     });
     
     shopObjects.push({
@@ -163,7 +169,7 @@ export async function createContent() {
       productsData
     });
 
-    console.log(`${shopObjects.length}/${files.length} rédigé.`);
+    //console.log(`${shopObjects.length}/${files.length} rédigé.`);
   }
 
   
