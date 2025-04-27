@@ -1,10 +1,11 @@
-import { google } from 'googleapis'
-import readline from 'readline'
-import  dotenv from  'dotenv';
+import { google } from 'googleapis';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } = process.env;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, GOOGLE_REFRESH_WEBMASTER } = process.env;
+
+//console.log("REFRESH_TOKEN : ", GOOGLE_REFRESH_WEBMASTER);
 
 const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
@@ -12,35 +13,25 @@ const oauth2Client = new google.auth.OAuth2(
   GOOGLE_REDIRECT_URI
 );
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+// Définir automatiquement le refresh token
+oauth2Client.setCredentials({
+  refresh_token: GOOGLE_REFRESH_WEBMASTER,
 });
 
-// Change the scope to the one you needs
-// ...existing code...
-
-const SCOPES = ['https://www.googleapis.com/auth/siteverification'];
-//const SCOPES = ['https://www.googleapis.com/auth/webmasters'];
-// Them authenticate with Google, copy the code/paste the code in terminal, and get the refresh token
-// FAIRE ATTENTION A BIEN remplacer "%2F" par "/"  AU DËBUT ET AU COPIER-COLLER !
-
-function getAccessToken() {
-  const authUrl = oauth2Client.generateAuthUrl({
-    scope: SCOPES,
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
-  rl.question('Enter the code from that page here: ', (code) => {
-    oauth2Client.getToken(code, (err, token) => {
-      if (err) {
-        console.error('Error retrieving access token', err);
-        return;
-      }
-      oauth2Client.setCredentials(token);
-      console.log('Refresh Token:', JSON.stringify(token, null, 2));
-      rl.close();
-    });
-  });
+/**
+ * Récupère automatiquement un nouveau access token grâce au refresh token.
+ * @returns {Promise<string>} Le nouvel access token.
+ */
+export async function getAccessToken() {
+  try {
+    const { token } = await oauth2Client.getAccessToken();
+    //console.log("Updated Access Token:", token);
+    return token;
+  } catch (err) {
+    console.error("Error refreshing access token", err);
+    throw err;
+  }
 }
 
-getAccessToken();
+// Appel de la fonction pour obtenir et afficher le nouveau token
+//getAccessToken();

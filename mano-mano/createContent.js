@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import OpenAI from 'openai';
+import { create } from 'domain';
+import { findBanner } from './findBanner.js';
 
 dotenv.config();
 
@@ -19,14 +21,12 @@ const categoriesFilePath = path.join(process.cwd(), 'mano-mano', 'json', 'catego
 export async function generateContent(fileName, productsContent) {
   const prompt = `À partir du fichier JSON de produits "${fileName}" dont le contenu est ${JSON.stringify(productsContent).slice(0, 1000)}..., génère en français :
 - Un titre de catégorie optimisé pour le SEO (maximum 50 caractères)
-- Une description de la catégorie explicite et aguicheuse (200 à 300 caractères)
-- Un slug pour sous-domaine basé sur le nom du fichier
+- Une description de la catégorie explicite et aguicheuse (260 à 320 caractères)
 
 Réponds uniquement en JSON au format:
 {
   "title": "...",
   "description": "...",
-  "slug": "..."
 }`;
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
@@ -62,7 +62,6 @@ export async function createContent() {
   
   for (const fileName of files) {
     const filePath = path.join(productsDir, fileName);
-    console.log(`Traitement du fichier: ${fileName}`);
     
     // Lit le contenu du fichier JSON
     const fileContent = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -71,23 +70,45 @@ export async function createContent() {
     let categoryData;
     try {
       categoryData = await generateContent(fileName, fileContent);
-      console.log("Contenu généré :", categoryData);
+      //console.log("Contenu généré :", categoryData);
     } catch (err) {
       console.error(`Erreur lors de la génération du contenu pour ${fileName}:`, err);
-      continue;
+      // Réessayer au cas de problème
+      try {
+        console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
+        categoryData = await generateContent(fileName, fileContent);
+        console.log("Contenu généré après nouvelle tentative :", categoryData);
+      } catch (retryErr) {
+        console.error(`Nouvel échec lors de la génération du contenu pour ${fileName}:`, retryErr);
+        continue; // Passe au fichier suivant en cas d'échec répété
+      }
     }
     
     // Prépare shopData
+    const slugSubDomain = fileName
+      .replace(/\.json$/, '')
+      .toLowerCase()
+      .replace(/_/g, '-')
+      .replace(/--/g, "-")
+      .slice(0, 26);
+
     const shopData = {
       name: `${categoryData.title} Mano Mano`,
-      domain: `${categoryData.slug}.mano-mano.store`
+      domain: `${slugSubDomain}.mano-mano.store`
     };
 
+    // Récupérer l'URL du premier produit (propriété "url") du JSON traité
+    let productUrl = "";
+    if (fileContent.length > 0 && fileContent[0].url) {
+      productUrl = fileContent[0].url;
+    }
+    //console.log("URL du 1er produit :", productUrl);
 
-    // On initialise categoryImage à null
-    let categoryImage = 'https://lareclame.fr/wp-content/uploads/2025/03/manomano-marseillaise-affichage-3-1-1600x1227.png';
+    // Obtenir bannerUrl via le premnier produit
+    const categoryImage = await findBanner(productUrl);
+    //console.log("Image de la catégorie :", categoryImage);
     
-    // Prépare contentData (sans id, qui sera défini lors de l'upload)
+    // Prépare contentData en utilisant categoryData généré par OpenAI et la banner récupérée
     const contentData = {
       heroTitle: categoryData.title,
       heroDesc: categoryData.description,
@@ -98,8 +119,9 @@ export async function createContent() {
 
     // Prépare productsData en convertissant les prix
     const productsData = fileContent.map(product => {
-      const originalPrice = parseFloat(product.originalPrice.replace(',', '.'));
-      const discountedPrice = parseFloat(product.price.replace(',', '.'));
+      const originalPrice = parseFloat(product.originalPrice.replace(',', '.').replace(/\s|\u202f/g, ''));
+      const discountedPrice = parseFloat(product.price.replace(',', '.').replace(/\s|\u202f/g, ''));
+      //console.log(`Produit: ${product.title}, Prix extrait: ${product.price}, Prix converti: ${discountedPrice}`);
 
       // Création de slug pour chaque produit
       let productSlug = product.title
@@ -109,15 +131,22 @@ export async function createContent() {
                 .replace(/[^a-z0-9-]/g, "")
                 .slice(0, 99);
 
+
+      // Clean des features
+      //product.desc = product.desc.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/"/g,'').trim();
+
       // Changement URL des images
       product.images = product.images.map(image => {
         return image.replace(/\/T\//g, '/L/');
       });
-                  
+
+      // clean des details
+      product.details = product.details.replace(/<p>"<\/p>/g, "");
+              
 
       return {
         title: product.title,
-        desc: product.features,
+        //desc: product.features,
         slug: productSlug,
         images: product.images,
         more1: product.details,
@@ -133,7 +162,14 @@ export async function createContent() {
       contentData,
       productsData
     });
+
+    console.log(`${shopObjects.length}/${files.length} rédigé.`);
   }
+
   
   return shopObjects;
 }
+
+// createContent().catch(err => {
+//   console.error('Erreur lors de la création du contenu:', err);
+// })

@@ -18,7 +18,8 @@ async function getCount(tableName) {
  * @param {Array} shopObjects - Tableau d'objets contenant shopData, contentData et productsData
  */
 export async function uploadShop(shopObjects) {
-    for (const shopObj of shopObjects) {
+    for (let i = 0; i < shopObjects.length; i++) {
+        const shopObj = shopObjects[i];
         const { fileName, shopData, contentData, productsData } = shopObj;
         
         // Etape 1 : Créer le shop dans la table "shops"
@@ -33,7 +34,7 @@ export async function uploadShop(shopObjects) {
         }
         
         const shopId = shopInserted[0].id;
-        console.log(`Shop inséré avec l'ID: ${shopId} pour ${fileName}`);
+        //console.log(`Shop inséré avec l'ID: ${shopId} pour ${fileName}`);
         // Mise à jour de l'objet shop pour que builder.js puisse avoir accès à l'id
         shopObj.shopData.id = shopId;
         
@@ -64,7 +65,7 @@ export async function uploadShop(shopObjects) {
             console.error(`Erreur lors de l'insertion dans contents pour ${fileName}:`, contentError);
             continue;
         }
-        console.log(`Insertion dans contents réussie pour ${fileName}`);
+        //console.log(`Insertion dans contents réussie pour ${fileName}`);
         
         // Etape 3 : Insérer les produits dans la table "products"
         let productsCount;
@@ -75,7 +76,10 @@ export async function uploadShop(shopObjects) {
             continue;
         }
         
+        //console.log(`Insertion de ${productsData.length} produits...`);
+
         for (let i = 0; i < productsData.length; i++) {
+            
             const product = productsData[i];
             const newProductId = productsCount + i + 1;
             
@@ -101,12 +105,14 @@ export async function uploadShop(shopObjects) {
             if (productError) {
                 console.error(`Erreur lors de l'insertion du produit "${product.title}" pour ${fileName}:`, productError);
             } else {
-                console.log(`Produit "${product.title}" inséré avec succès pour ${fileName}`);
+                //console.log(`Produit "${product.title}" inséré avec succès pour ${fileName}`);
             }
         }
+        console.log(`${i + 1}/${shopObjects.length} uploadé.`);
     }
+    
 }
 
-uploadShop().catch(err => {
-    console.error("Erreur globale : ", err);
-});
+// uploadShop().catch(err => {
+//     //console.error("Erreur globale : ", err);
+// });

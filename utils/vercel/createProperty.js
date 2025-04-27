@@ -12,20 +12,13 @@ if (!process.env.VERCEL_TOKEN) {
  * @returns {Promise<Object>} - Les détails du projet, du déploiement et les infos DNS.
  */
 export async function createProperty(shop, repository) {
-    console.log(`Création de la propriété Vercel pour le shop: ${JSON.stringify(shop)}...`);
+    //console.log(`Création de la propriété Vercel pour le shop: ${JSON.stringify(shop)}...`);
     
     try {
         const apiKey = process.env.VERCEL_TOKEN;
-        // Conversion du nom du shop pour respecter les guidelines Vercel.
-        const projectName = shop.name
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^a-z0-9-]/g, "")
-            .replace(/ /g, "-")
-            .slice(0, 99);
             
         const data = {
-            name: projectName,
+            name: shop.domain,
             environmentVariables: [
                 {
                     key: "CUSTOM_DOMAIN",
@@ -51,6 +44,12 @@ export async function createProperty(shop, repository) {
                     target: ["production"],
                     type: "plain"
                 },
+                {
+                    key: "GOOGLE_REFRESH_TOKEN_WEBMASTER",
+                    value: "ya29.a0AZYkNZib5XVH1kdPi2fWTBJUCHWB9QSz6EPWFQcNRKIsW-JFc-xVrAPIV33iHZvSXaTBUsFuNyBqk9S_d8D6hmDWM4DhFlnS_VFfgsa0aSlVzKQ1JcM4JuFsGpvyl9Jdg9na2OLq4YuXKPTM2W109OtlAWXAfSx9xZPZBevkAQaCgYKAeASARESFQHGX2MiAAj0qd-X2w4IyX2_ja3slg0177",
+                    target: ["production"],	
+                    type: "plain"
+                }
             ],
             framework: "nextjs",
             gitRepository: {
@@ -75,7 +74,7 @@ export async function createProperty(shop, repository) {
         }
         
         const project = await res.json();
-        console.log(`Projet créé avec succès pour "${shop.name}":`, project);
+        //console.log(`Projet créé avec succès pour "${shop.name}"`)//:`, project);
 
         // Ajouter un domaine personnalisé
         const domainRes = await fetch(`https://api.vercel.com/v9/projects/${project.id}/domains`, {
@@ -95,7 +94,7 @@ export async function createProperty(shop, repository) {
         }
 
         const domainResult = await domainRes.json();
-        console.log(`Domaine personnalisé "${shop.domain}" ajouté avec succès:`, domainResult);
+        //console.log(`Domaine personnalisé "${shop.domain}" ajouté avec succès:`)//, domainResult);
 
         // Déployer le projet
         const deployRes = await fetch("https://api.vercel.com/v13/deployments", {
@@ -113,7 +112,7 @@ export async function createProperty(shop, repository) {
                 name: data.name,
                 projectSettings: {
                     framework: data.framework,
-                    buildCommand: "next build && npm run generate-sitemap"
+                    buildCommand: "next build && npm run generate-sitemap && npm run submit-sitemap",
                 }
             })
         });
@@ -124,7 +123,7 @@ export async function createProperty(shop, repository) {
         }
         
         const deployment = await deployRes.json();
-        console.log(`Déploiement créé pour "${shop.name}":`, deployment);
+        //console.log(`Déploiement créé pour "${shop.name}":`)//, deployment);
         
         // Informations DNS pour pointer vers Vercel (exemple)
         const vercelDnsInfo = {

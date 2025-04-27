@@ -108,4 +108,6 @@ export async function indexShop(domain) {
 }
 
 
+// const domain = 'accessoires-de-sauna.mano-mano.store'
+// await indexShop(domain);
 
