@@ -70,14 +70,14 @@ export async function createContent() {
     let categoryData;
     try {
       categoryData = await generateContent(fileName, fileContent);
-      //console.log("Contenu généré :", categoryData);
+      console.log("Contenu généré :", categoryData);
     } catch (err) {
       console.error(`Erreur génération de contenu, retry`)// ${fileName}:`, err);
       // Réessayer au cas de problème
       try {
-        //console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
+        console.log(`Nouvelle tentative pour générer le contenu pour ${fileName}...`);
         categoryData = await generateContent(fileName, fileContent);
-        //console.log("Contenu généré après nouvelle tentative :", categoryData);
+        console.log("Contenu généré après nouvelle tentative :", categoryData);
       } catch (retryErr) {
         console.error(`Nouvel échec génération pour ${fileName}:`)//, retryErr);
         continue; // Passe au fichier suivant en cas d'échec répété
@@ -102,11 +102,11 @@ export async function createContent() {
     if (fileContent.length > 0 && fileContent[0].url) {
       productUrl = fileContent[0].url;
     }
-    //console.log("URL du 1er produit :", productUrl);
+    console.log("URL du 1er produit :", productUrl);
 
     // Obtenir bannerUrl via le premnier produit
     const categoryImage = await findBanner(productUrl);
-    //console.log("Image de la catégorie :", categoryImage);
+    console.log("Image de la catégorie :", categoryImage);
     
     // Prépare contentData en utilisant categoryData généré par OpenAI et la banner récupérée
     const contentData = {
@@ -121,7 +121,7 @@ export async function createContent() {
     const productsData = fileContent.map(product => {
       const originalPrice = parseFloat(product.originalPrice.replace(',', '.').replace(/\s|\u202f/g, ''));
       const discountedPrice = parseFloat(product.price.replace(',', '.').replace(/\s|\u202f/g, ''));
-      //console.log(`Produit: ${product.title}, Prix extrait: ${product.price}, Prix converti: ${discountedPrice}`);
+      console.log(`Produit: ${product.title}, Prix extrait: ${product.price}, Prix converti: ${discountedPrice}`);
 
       // Création de slug pour chaque produit
       let productSlug = product.title
