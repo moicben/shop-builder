@@ -33,5 +33,5 @@ export async function getAccessToken() {
   }
 }
 
-// Appel de la fonction pour obtenir et afficher le nouveau token
+//Appel de la fonction pour obtenir et afficher le nouveau token
 //getAccessToken();

@@ -43,6 +43,24 @@ export async function createProperty(shop, repository) {
                     type: "plain"
                 },
                 {
+                    key: "GOOGLE_CLIENT_ID",
+                    value: process.env.GOOGLE_CLIENT_ID,
+                    target: ["production"],
+                    type: "plain"
+                },
+                {
+                    key: "GOOGLE_CLIENT_SECRET",
+                    value: process.env.GOOGLE_CLIENT_SECRET,
+                    target: ["production"],
+                    type: "plain"
+                },
+                {
+                    key: "GOOGLE_REDIRECT_URI",
+                    value: process.env.GOOGLE_REDIRECT_URI,
+                    target: ["production"],
+                    type: "plain"
+                },
+                {
                     key: "GOOGLE_REFRESH_TOKEN_WEBMASTER",
                     value: await getAccessToken(),
                     target: ["production"],
