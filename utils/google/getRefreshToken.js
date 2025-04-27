@@ -20,8 +20,8 @@ const rl = readline.createInterface({
 // Change the scope to the one you needs
 // ...existing code...
 
-//const SCOPES = ['https://www.googleapis.com/auth/siteverification'];
-const SCOPES = ['https://www.googleapis.com/auth/webmasters'];
+const SCOPES = ['https://www.googleapis.com/auth/siteverification'];
+//const SCOPES = ['https://www.googleapis.com/auth/webmasters'];
 // Them authenticate with Google, copy the code/paste the code in terminal, and get the refresh token
 // FAIRE ATTENTION A BIEN remplacer "%2F" par "/"  AU DËBUT ET AU COPIER-COLLER !
 

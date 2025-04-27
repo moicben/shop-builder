@@ -3,7 +3,7 @@ import { listFieldsWithContents } from "./listFields.js";
 import { translateContent } from "./translateContent.js";
 import { createProperty } from "../christopeit/createProperty.js";
 import { storeShop } from "./storeShop.js"; // Import de la fonction storeShop
-import { indexShop } from "./indexShop.js"; // Import de la fonction indexShop
+import { indexShop } from "../utils/google/indexShop.js"; // Import de la fonction indexShop
 
 export async function mainProcess() {
   console.log("Début du processus de déploiement automatisé...");

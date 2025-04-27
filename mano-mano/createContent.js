@@ -82,16 +82,10 @@ export async function createContent() {
       name: `${categoryData.title} Mano Mano`,
       domain: `${categoryData.slug}.mano-mano.store`
     };
-    
-    // Détermine categoryImage en recherchant dans categoriesData
-    const baseName = fileName.replace('.json', '').toLowerCase();
-    let categoryImage = null;
-    for (const cat of categoriesData) {
-      if (cat.pageTitle && baseName.includes(cat.pageTitle.toLowerCase())) {
-        categoryImage = cat.bannerUrl;
-        break;
-      }
-    }
+
+
+    // On initialise categoryImage à null
+    let categoryImage = 'https://lareclame.fr/wp-content/uploads/2025/03/manomano-marseillaise-affichage-3-1-1600x1227.png';
     
     // Prépare contentData (sans id, qui sera défini lors de l'upload)
     const contentData = {

@@ -14,9 +14,9 @@ import { importCookies } from '../utils/importCookies.js';
  */
 async function extractProductDetails(page, url, cookieFilePath) {
     // Import cookies if a cookie file is provided
-    if (cookieFilePath) {
-        await importCookies(page, cookieFilePath);
-    }
+    // if (cookieFilePath) {
+    //     await importCookies(page, cookieFilePath);
+    // }
 
     await page.goto(url, { waitUntil: 'networkidle2' });
 

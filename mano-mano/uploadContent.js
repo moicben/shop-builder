@@ -34,6 +34,8 @@ export async function uploadShop(shopObjects) {
         
         const shopId = shopInserted[0].id;
         console.log(`Shop inséré avec l'ID: ${shopId} pour ${fileName}`);
+        // Mise à jour de l'objet shop pour que builder.js puisse avoir accès à l'id
+        shopObj.shopData.id = shopId;
         
         // Etape 2 : Insérer dans la table "contents"
         let contentsCount;
