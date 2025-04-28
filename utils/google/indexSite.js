@@ -48,5 +48,5 @@ export async function indexSite(domain) {
   }
 }
 
-// const domain = 'test1.mano-mano.store'
-// await indexSite(domain);
+const domain = 'accessoires-sauna-vapeur.mano-mano.store'
+await indexSite(domain);

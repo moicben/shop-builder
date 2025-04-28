@@ -13,6 +13,7 @@
     "domain": "^0.0.1",
     "dotenv": "^16.5.0",
     "fs": "^0.0.1-security",
+    "gh": "^2.8.9",
     "googleapis": "^148.0.0",
     "node-fetch": "^3.3.2",
     "openai": "^4.96.0",
