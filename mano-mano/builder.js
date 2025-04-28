@@ -29,7 +29,7 @@ async function main() {
     // Boucle générale 
     for (let i = 0; i < files.length; i++) {
         const fileName = files[i];
-        console.log(`\n=== Traitement du fichier ${fileName} (${i + 1}/${files.length}) ===`);
+        console.log(`\n=== ${i + 1}/${files.length} : ${fileName}  ===`);
 
         // Étape 1 : Création du contenu shop via le JSON
         console.log("-> [1/5] Génération du contenu");
@@ -42,7 +42,7 @@ async function main() {
         await uploadShop([shopObj]);
 
         // Étape 3 : Déploiement Gituh Pages
-        console.log(`-> [3/5] Déploiement sur Github`) //: ${shop.domain}`);
+        console.log(`-> [3/5] Déploiement Github`) //: ${shop.domain}`);
         try {
             await deployRepository(shop, sourceRepoDir);
         } catch (err) {
