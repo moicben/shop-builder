@@ -23,13 +23,11 @@ export async function deployRepository(shop, sourceRepoDir) {
     const outDir = path.join(sourceRepoDir, 'out');
     if (fs.existsSync(outDir)) {
         fs.rmSync(outDir, { recursive: true, force: true });
-        console.log('Ancien dossier "out" supprimé.');
     }
 
     // Build et export du site statique Next.js avec les variables d'environnement spécifiques
-    console.log('Building the site for shop:', shop.domain);
     const buildEnv = Object.assign({}, process.env, envVars);
-    execCommand('npm run build', { env: buildEnv });
+    execCommand('npm run build', { env: buildEnv, stdio: 'ignore' });
 
     // Attendre que le build soit terminé
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -42,23 +40,19 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Créer le fichier CNAME dans le dossier "out" pour définir le domaine personnalisé
     fs.writeFileSync(path.join(outDir, 'CNAME'), shop.domain);
-    console.log(`Custom domain "${shop.domain}" written to CNAME file.`);
 
     // Préparer le déploiement de l'export statique
     process.chdir(outDir);
-    execCommand('git init');
-    execCommand('git add .');
-    execCommand('git commit -m "Deploy static Next.js site"');
+    execCommand('git init', { stdio: 'ignore' });
+    execCommand('git add .', { stdio: 'ignore' });
+    execCommand('git commit -m "Deploy static Next.js site"', { stdio: 'ignore' });
 
     const newRepoUrl = `https://github.com/moicben/${shop.domain}`;
-    console.log(`Creating the repository ${newRepoUrl}...`);
     await createRepository(shop.domain);
 
-    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`);
-    execCommand('git branch -M main');
-    execCommand('git push -u origin main --force');
-
-    console.log('Deployment completed successfully.');
+    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore' });
+    execCommand('git branch -M main', { stdio: 'ignore' });
+    execCommand('git push -u origin main --force', { stdio: 'ignore' });
 
     // Publier sur GitHub Pages
     await publishRepository(shop.domain);

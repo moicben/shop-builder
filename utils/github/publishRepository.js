@@ -28,7 +28,7 @@ export async function publishRepository(repoName) {
                 "Content-Type": "application/json"
             }
         });
-        console.log("GitHub Pages activated successfully:", response.data);
+        //console.log("GitHub Pages activated successfully:", response.data);
     } catch (error) {
         console.error("Failed to activate GitHub Pages:",
             error.response ? error.response.data : error.message);

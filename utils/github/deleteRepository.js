@@ -26,7 +26,7 @@ export async function deleteRepository(repoName) {
 }
 
 // Example usage:
-await deleteRepository('sauna-infrarouge.mano-mano.store');
-await  deleteRepository('cabines-de-hammam.mano-mano.store');
-await  deleteRepository('accessoires-sauna-vapeur.mano-mano.store');
-await  deleteRepository('test1');
+// await deleteRepository('sauna-infrarouge.mano-mano.store');
+// await  deleteRepository('cabines-de-hammam.mano-mano.store');
+// await  deleteRepository('accessoires-sauna-vapeur.mano-mano.store');
+// await  deleteRepository('test1');
