@@ -64,5 +64,5 @@ export async function deployRepository(shop, sourceRepoDir) {
     await publishRepository(shop.domain);
 
     // Revenir au répertoire de travail d'origine
-    process.chdir(path.resolve("..."));
+    process.chdir(path.resolve("../.."));
 }
