@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function deleteRepository(repoName) {
-    const token = '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'
+    const token = process.env.GITHUB_TOKEN; // Ensure this is set in your environment variables
     if (!token) {
         console.error("GITHUB_TOKEN is not set in your environment.");
         process.exit(1);

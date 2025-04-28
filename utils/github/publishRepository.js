@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export async function publishRepository(repoName) {
-    const token = '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'; // You may also use process.env.GITHUB_TOKEN
+    const token = process.env.GITHUB_TOKEN
     if (!token) {
         console.error("GITHUB_TOKEN is not set in your environment.");
         process.exit(1);
