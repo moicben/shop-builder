@@ -32,7 +32,7 @@ async function main() {
         console.log(`\n=== Traitement du fichier ${fileName} (${i + 1}/${files.length}) ===`);
 
         // Étape 1 : Création du contenu shop via le JSON
-        console.log("-> [1/5] Création du contenu");
+        console.log("-> [1/5] Génération du contenu");
         const shopObj = await createContent(fileName);
         const shop = shopObj.shopData;
 
@@ -42,7 +42,7 @@ async function main() {
         await uploadShop([shopObj]);
 
         // Étape 3 : Déploiement Gituh Pages
-        console.log(`-> [3/5] Déploiement Github : ${shop.domain}`);
+        console.log(`-> [3/5] Déploiement sur Github`) //: ${shop.domain}`);
         try {
             await deployRepository(shop, sourceRepoDir);
         } catch (err) {
@@ -50,7 +50,7 @@ async function main() {
         }
 
         // Étape 4 : Indexation via Google Search Console
-        console.log("-> [4/5] Indexation Search Console");
+        console.log("-> [4/5] Indexation Console");
         try {
             await indexSite(shop.domain);
         } catch (err) {
@@ -58,7 +58,7 @@ async function main() {
         }
 
         // Étape 5 : Déplacement du fichier JSON traité dans le sous-répertoire /uploaded
-        console.log("-> [5/5] Déplacement du fichier JSON");
+        console.log("-> [5/5] Déplacement du JSON");
         const uploadedDir = path.join(productsDir, "uploaded");
         if (!fs.existsSync(uploadedDir)) {
             fs.mkdirSync(uploadedDir);
