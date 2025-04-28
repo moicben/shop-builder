@@ -42,7 +42,7 @@ async function main() {
         await uploadShop([shopObj]);
 
         // Étape 3 : Déploiement Gituh Pages
-        console.log("-> [3/5] Déploiement sur Github");
+        console.log(`-> [3/5] Déploiement Github : ${shop.domain} <-`);
         try {
             await deployRepository(shop, sourceRepoDir);
         } catch (err) {
