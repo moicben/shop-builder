@@ -5,6 +5,11 @@ dotenv.config();
 
 export async function createRepository(repoName) {
     const token = process.env.GITHUB_TOKEN; // Ensure this is set in your environment variables
+    if (!token) {
+        console.error("GITHUB_TOKEN is not set in your environment.");
+        process.exit(1);
+    }
+    
     const url = "https://api.github.com/user/repos";
 
     try {

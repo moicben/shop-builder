@@ -54,7 +54,7 @@ export async function deployRepository(shop, sourceRepoDir) {
     console.log(`Creating the repository ${newRepoUrl}...`);
     await createRepository(shop.domain);
 
-    execCommand(`git remote add origin ${newRepoUrl}`);
+    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`);
     execCommand('git branch -M main');
     execCommand('git push -u origin main --force');
 
