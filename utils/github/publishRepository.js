@@ -1,4 +1,7 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export async function publishRepository(repoName) {
     const token = process.env.GITHUB_TOKEN

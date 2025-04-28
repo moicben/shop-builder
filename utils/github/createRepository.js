@@ -1,4 +1,7 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export async function createRepository(repoName) {
     const token = process.env.GITHUB_TOKEN; // Ensure this is set in your environment variables
@@ -20,4 +23,4 @@ export async function createRepository(repoName) {
     }
 }
 
-//createRepository();
+//createRepository("test2");

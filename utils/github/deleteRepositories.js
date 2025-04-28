@@ -1,4 +1,7 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export async function deleteRepository(repoName) {
     const token = process.env.GITHUB_TOKEN; // Ensure this is set in your environment variables
@@ -23,6 +26,7 @@ export async function deleteRepository(repoName) {
 }
 
 // Example usage:
-deleteRepository('saunas-infrarouges.mano-mano.store');
-deleteRepository('cabines-de-hammam.mano-mano.store');
-deleteRepository('accessoires-sauna.mano-mano.store');
+await deleteRepository('sauna-infrarouge.mano-mano.store');
+await  deleteRepository('cabines-de-hammam.mano-mano.store');
+await  deleteRepository('accessoires-sauna-vapeur.mano-mano.store');
+await  deleteRepository('test1');

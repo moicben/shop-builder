@@ -26,22 +26,23 @@ async function main() {
 
     //
 
-    // Boucle générale : pour chaque fichier traité, on exécute toutes les étapes
+    // Boucle générale 
     for (let i = 0; i < files.length; i++) {
         const fileName = files[i];
         console.log(`\n=== Traitement du fichier ${fileName} (${i + 1}/${files.length}) ===`);
 
-        // Étape 1 : Pré-indexation sur Google Search Console
-        console.log("-> [1/6] Pré-indexation Search Console");
+        // Étape 1 : Création du contenu shop via le JSON
+        console.log("-> [1/6] Création du contenu");
+        const shopObj = await createContent(fileName);
+        const shop = shopObj.shopData;
+
+        // Étape 2 : Pré-indexation sur Google Search Console
+        console.log("-> [2/6] Pré-indexation Search Console");
         try {
             await indexSite(shop.domain);
         } catch (err) {
-            console.error(`[1/6] Erreur lors de la pré-indexation '${shop.name}':`, err);
+            console.error(`[2/6] Erreur lors de la pré-indexation '${shop.name}':`, err);
         }
-
-        // Étape 2 : Création du contenu shop via le JSON
-        console.log("-> [2/6] Création du contenu");
-        const shopObj = await createContent(fileName);
 
         // Étape 3 : Upload du shop et contenus
         console.log("-> [3/6] Upload sur Supabase");
@@ -49,7 +50,6 @@ async function main() {
         await uploadShop([shopObj]);
 
         // Étape 4 : Déploiement Gituh Pages
-        const shop = shopObj.shopData;
         console.log("-> [4/6] Déploiement sur Github");
         try {
             await deployRepository(shop, sourceRepoDir);
@@ -58,6 +58,7 @@ async function main() {
         }
 
         // Étape 5 : Indexation via Google Search Console
+        console.log("-> [5/6] Indexation Search Console");
         try {
             await indexSite(shop.domain);
         } catch (err) {
@@ -65,7 +66,7 @@ async function main() {
         }
 
         // Étape 6 : Déplacement du fichier JSON traité dans le sous-répertoire /uploaded
-        console.log("-> [5/6] Déplacement du fichier JSON  <-");
+        console.log("-> [6/6] Déplacement du fichier JSON  <-");
         const uploadedDir = path.join(productsDir, "uploaded");
         if (!fs.existsSync(uploadedDir)) {
             fs.mkdirSync(uploadedDir);
