@@ -62,4 +62,7 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Publier sur GitHub Pages
     await publishRepository(shop.domain);
+
+    // Revenir au répertoire de travail d'origine
+    process.chdir(path.resolve(".."));
 }
