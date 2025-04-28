@@ -21,7 +21,7 @@ async function main() {
     console.log(`Nombre de fichiers à traiter: ${files.length}`);
 
     // Étape 0 : Clonage du dépôt source
-    console.log("-> [0/5] Clonage du dépôt source <-");
+    console.log("-> [0/5] Clonage du dépôt source");
     await installRepository(sourceRepoDir, REPO_ORIGIN);
 
     //
@@ -42,7 +42,7 @@ async function main() {
         await uploadShop([shopObj]);
 
         // Étape 3 : Déploiement Gituh Pages
-        console.log(`-> [3/5] Déploiement Github : ${shop.domain} <-`);
+        console.log(`-> [3/5] Déploiement Github : ${shop.domain}`);
         try {
             await deployRepository(shop, sourceRepoDir);
         } catch (err) {
@@ -58,7 +58,7 @@ async function main() {
         }
 
         // Étape 5 : Déplacement du fichier JSON traité dans le sous-répertoire /uploaded
-        console.log("-> [5/5] Déplacement du fichier JSON  <-");
+        console.log("-> [5/5] Déplacement du fichier JSON");
         const uploadedDir = path.join(productsDir, "uploaded");
         if (!fs.existsSync(uploadedDir)) {
             fs.mkdirSync(uploadedDir);
@@ -68,7 +68,7 @@ async function main() {
         try {
             fs.renameSync(sourcePath, destinationPath);
         } catch (err) {
-            console.error(`[6/5] Erreur lors du déplacement du fichier '${fileName}':`, err);
+            console.error(`[5/5] Erreur lors du déplacement du fichier '${fileName}':`, err);
         }
     }
 }
