@@ -10,9 +10,6 @@ import { execCommand } from '../execCommand.js';
 dotenv.config();
 
 export async function deployRepository(shop, sourceRepoDir) {
-    // Nous partons du principe que installRepository.js a cloné et installé les dépendances dans ce dossier
-    process.chdir(sourceRepoDir);
-
     // Définition des variables d'environnement pour le build spécifique au shop
     const envVars = {
         SHOP_ID: shop.id.toString(),
@@ -27,7 +24,7 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Build et export du site statique Next.js avec les variables d'environnement spécifiques
     const buildEnv = Object.assign({}, process.env, envVars);
-    execCommand('npm run build', { env: buildEnv, stdio: 'ignore' });
+    execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
 
     // Attendre que le build soit terminé
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -41,22 +38,23 @@ export async function deployRepository(shop, sourceRepoDir) {
     // Créer le fichier CNAME dans le dossier "out" pour définir le domaine personnalisé
     fs.writeFileSync(path.join(outDir, 'CNAME'), shop.domain);
 
-    // Préparer le déploiement de l'export statique
-    process.chdir(outDir);
-    execCommand('git init', { stdio: 'ignore' });
-    execCommand('git add .', { stdio: 'ignore' });
-    execCommand('git commit -m "Deploy static Next.js site"', { stdio: 'ignore' });
+    // Préparer le déploiement de l'export statique en utilisant l'option cwd
+    execCommand('git init', { stdio: 'ignore', cwd: outDir });
+    execCommand('git add .', { stdio: 'ignore', cwd: outDir });
+    execCommand('git commit -m "Deploy static Next.js site"', { stdio: 'ignore', cwd: outDir });
 
     const newRepoUrl = `https://github.com/moicben/${shop.domain}`;
     await createRepository(shop.domain);
 
-    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore' });
-    execCommand('git branch -M main', { stdio: 'ignore' });
-    execCommand('git push -u origin main --force', { stdio: 'ignore' });
+    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
+    //execCommand(`git remote add origin https://github.com/moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
+    
+        
+    execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
+    execCommand('git push -u origin main --force', { stdio: 'ignore', cwd: outDir });
 
     // Publier sur GitHub Pages
     await publishRepository(shop.domain);
 
-    // Revenir au répertoire de travail d'origine
-    process.chdir(path.resolve("../.."));
+    // Plus besoin de revenir au répertoire d'origine
 }

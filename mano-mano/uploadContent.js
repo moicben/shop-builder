@@ -1,17 +1,5 @@
-import { supabase } from '../utils/supabase.js';
+import { supabase } from '../utils/supabase.js'
 
-/**
- * Fonction pour récupérer le nombre de lignes d'une table
- */
-async function getCount(tableName) {
-    const { count, error } = await supabase
-        .from(tableName)
-        .select('*', { count: 'exact', head: true });
-    if (error) {
-        throw new Error(`Erreur lors du comptage de ${tableName}: ${error.message}`);
-    }
-    return count;
-}
 
 /**
  * Upload des données de shop passées en paramètre.
@@ -34,22 +22,11 @@ export async function uploadShop(shopObjects) {
         }
         
         const shopId = shopInserted[0].id;
-        //console.log(`Shop inséré avec l'ID: ${shopId} pour ${fileName}`);
         // Mise à jour de l'objet shop pour que builder.js puisse avoir accès à l'id
         shopObj.shopData.id = shopId;
         
-        // Etape 2 : Insérer dans la table "contents"
-        let contentsCount;
-        try {
-            contentsCount = await getCount('contents');
-        } catch (countError) {
-            console.error('Erreur lors du comptage de contents:', countError);
-            continue;
-        }
-        const newContentId = contentsCount + 1;
-        
+        // Etape 2 : Insérer dans la table "contents" sans assigner manuellement un id
         const contentRecord = {
-            id: newContentId,
             shop_id: shopId,
             heroTitle: contentData.heroTitle,
             heroDesc: contentData.heroDesc,
@@ -65,26 +42,11 @@ export async function uploadShop(shopObjects) {
             console.error(`Erreur lors de l'insertion dans contents pour ${fileName}:`, contentError);
             continue;
         }
-        //console.log(`Insertion dans contents réussie pour ${fileName}`);
         
-        // Etape 3 : Insérer les produits dans la table "products"
-        let productsCount;
-        try {
-            productsCount = await getCount('products');
-        } catch (prodCountError) {
-            console.error('Erreur lors du comptage de products:', prodCountError);
-            continue;
-        }
-        
-        //console.log(`Insertion de ${productsData.length} produits...`);
-
-        for (let i = 0; i < productsData.length; i++) {
-            
-            const product = productsData[i];
-            const newProductId = productsCount + i + 1;
-            
+        // Etape 3 : Insérer les produits dans la table "products" sans spécifier manuellement l'id
+        for (let j = 0; j < productsData.length; j++) {
+            const product = productsData[j];
             const productRecord = {
-                id: newProductId,
                 shop_id: shopId,
                 category_id: 6,
                 title: product.title,
@@ -104,15 +66,7 @@ export async function uploadShop(shopObjects) {
             
             if (productError) {
                 console.error(`Erreur lors de l'insertion du produit "${product.title}" pour ${fileName}:`, productError);
-            } else {
-                //console.log(`Produit "${product.title}" inséré avec succès pour ${fileName}`);
             }
         }
-        //console.log(`${i + 1}/${shopObjects.length} uploadé.`);
     }
-    
 }
-
-// uploadShop().catch(err => {
-//     //console.error("Erreur globale : ", err);
-// });
