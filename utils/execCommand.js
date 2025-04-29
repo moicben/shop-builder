@@ -1,23 +1,34 @@
-import { spawn } from 'child_process';
+import { exec } from 'child_process';
+import spawnNpm from 'spawn-npm';
 
 export function execCommand(command, options = {}) {
     return new Promise((resolve, reject) => {
-        // Sépare la commande et ses arguments
-        const args = command.split(' ');
-        const cmd = args.shift();
-        const child = spawn(cmd, args, { stdio: 'inherit', ...options });
-
-        child.on('error', (error) => {
-            console.error(`Error executing command: ${command}`, error);
-            reject(error);
-        });
-
-        child.on('close', (code) => {
-            if (code !== 0) {
-                console.error(`Error executing command: ${command} (code ${code})`);
-                return reject(new Error(`Command failed with code ${code}`));
-            }
-            resolve();
-        });
+        if (command.startsWith("npm")) {
+            // Extraction des arguments pour npm (ex: "npm run build" => ["run", "build"])
+            const args = command.split(" ").slice(1);
+            // spawn-npm gère la résolution de l'exécutable sur Windows
+            spawnNpm(args, options, (error) => {
+                if (error) {
+                    console.error(`Error executing command: ${command}`, error);
+                    return reject(error);
+                }
+                resolve();
+            });
+        } else {
+            // Pour les autres commandes, on utilise la commande classique via exec
+            exec(command, options, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Error executing command: ${command}`, error);
+                    return reject(error);
+                }
+                if (stdout) {
+                    console.log(stdout);
+                }
+                if (stderr) {
+                    console.error(stderr);
+                }
+                resolve();
+            });
+        }
     });
 }
