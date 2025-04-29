@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
 import spawnNpm from 'spawn-npm';
+import path from 'path';
 
 export function execCommand(command, options = {}) {
     return new Promise((resolve, reject) => {
@@ -32,3 +33,7 @@ export function execCommand(command, options = {}) {
         }
     });
 }
+
+
+const command = "npm run build"; // Exemple de commande à exécuter
+await execCommand(command); 
