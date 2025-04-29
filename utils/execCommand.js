@@ -26,7 +26,7 @@ export function execCommand(command, options = {}) {
                     console.error(`Command "${command}" exited with code ${code}`);
                     return reject(new Error(`Command failed with code ${code}`));
                 }
-                console.log(`Command executed: "${command}"`);
+                //console.log(`Command executed: "${command}"`);
                 resolve();
             });
 
@@ -38,7 +38,7 @@ export function execCommand(command, options = {}) {
                     return reject(error);
                 }
                 if (stdout) {
-                    console.log(stdout);
+                    //console.log(stdout);
                 }
                 if (stderr) {
                     console.error(stderr);
