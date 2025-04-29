@@ -57,18 +57,19 @@ async function main() {
     
     const totalFiles = files.length;
     
-    // Diviser les fichiers en XX groupes parrallèles
+    // Diviser les fichiers en XX groupes 
     const groupCount = 10;
     const groups = Array.from({ length: groupCount }, () => []);
     files.forEach((file, index) => {
         groups[index % groupCount].push({ file, index });
     });
     
-    // Lancer les groupes en parallèle, avec un décalage de 3 secondes 
+    // Lancer les groupes en parallèle
     const groupTasks = groups.map((group, groupIndex) =>
         new Promise(async (resolve) => {
-            // Délai avant le lancement (0ms, 3000ms, 6000ms, 9000ms)
-            await new Promise(r => setTimeout(r, groupIndex * 3000));
+
+            // Délai avant le lancement
+            await new Promise(r => setTimeout(r, groupIndex * 4000));
             
             const repoDir = path.resolve("build-temp", String(groupIndex + 1));
             const groupId = groupIndex + 1;
