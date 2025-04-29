@@ -11,36 +11,31 @@ import { installRepository } from "./../utils/github/installRepository.js";
 const productsDir = path.join(process.cwd(), "mano-mano", "json", "products");
 const REPO_ORIGIN = "https://github.com/moicben/mano-store.git";
 
-async function processFile(fileName, fileIndex, totalFiles, sourceRepoDir) {
-    console.log(`\n=== ${fileIndex + 1}/${totalFiles} : ${fileName} ===`);
+async function processFile(fileName, fileIndex, totalFiles, sourceRepoDir, groupId) {
+    console.log(`\n[Groupe ${groupId}] === ${fileIndex + 1}/${totalFiles} : ${fileName} ===`);
     
-    // Étape 1 : Création du contenu shop via le JSON
-    console.log("-> [1/5] Génération du contenu");
+    console.log(`[Groupe ${groupId}] -> [1/5] Génération du contenu`);
     const shopObj = await createContent(fileName);
     const shop = shopObj.shopData;
     
-    // Étape 2 : Upload du shop et contenus
-    console.log("-> [2/5] Upload sur Supabase");
+    console.log(`[Groupe ${groupId}] -> [2/5] Upload sur Supabase`);
     await uploadShop([shopObj]);
     
-    // Étape 3 : Déploiement Github Pages
-    console.log("-> [3/5] Déploiement Github");
+    console.log(`[Groupe ${groupId}] -> [3/5] Déploiement Github`);
     try {
         await deployRepository(shop, sourceRepoDir);
     } catch (err) {
-        console.error(`[3/5] Erreur de création de propriété pour '${shop.name}':`, err);
+        console.error(`[Groupe ${groupId}] [3/5] Erreur de création de propriété pour '${shop.name}':`, err);
     }
     
-    // Étape 4 : Indexation via Google Search Console
-    console.log("-> [4/5] Indexation Console");
+    console.log(`[Groupe ${groupId}] -> [4/5] Indexation Console`);
     try {
         await indexSite(shop.domain);
     } catch (err) {
-        console.error(`[4/5] Erreur lors de l'indexation '${shop.name}':`, err);
+        console.error(`[Groupe ${groupId}] [4/5] Erreur lors de l'indexation '${shop.name}':`, err);
     }
     
-    // Étape 5 : Déplacement du fichier JSON traité dans le sous-répertoire /uploaded
-    console.log("-> [5/5] Déplacement du JSON");
+    console.log(`[Groupe ${groupId}] -> [5/5] Déplacement du JSON`);
     const uploadedDir = path.join(productsDir, "uploaded");
     if (!fs.existsSync(uploadedDir)) {
         fs.mkdirSync(uploadedDir);
@@ -50,7 +45,7 @@ async function processFile(fileName, fileIndex, totalFiles, sourceRepoDir) {
     try {
         fs.renameSync(sourcePath, destinationPath);
     } catch (err) {
-        console.error(`[5/5] Erreur lors du déplacement du fichier '${fileName}':`, err);
+        console.error(`[${groupId}] [5/5] Erreur lors du déplacement du fichier '${fileName}':`, err);
     }
 }
 
@@ -71,16 +66,17 @@ async function main() {
     // Lancer les 4 groupes en parallèle, avec un décalage de 3 secondes pour chacun
     const groupTasks = groups.map((group, groupIndex) =>
         new Promise(async (resolve) => {
-            // Délai avant le lancement du groupe (0ms, 3000ms, 6000ms, 9000ms)
+            // Délai avant le lancement (0ms, 3000ms, 6000ms, 9000ms)
             await new Promise(r => setTimeout(r, groupIndex * 3000));
             
             const repoDir = path.resolve("build-temp", String(groupIndex + 1));
-            console.log(`[0/5] Initialisation dépôt groupe ${groupIndex + 1}...`);
+            const groupId = groupIndex + 1;
+            console.log(`[${groupId}] [0/5] Initialisation dépôt ${groupId}...`);
             await installRepository(repoDir, REPO_ORIGIN);
             
             // Traiter les fichiers du groupe un par un (séquentiellement)
             for (const { file, index } of group) {
-                await processFile(file, index, totalFiles, repoDir);
+                await processFile(file, index, totalFiles, repoDir, groupId);
             }
             resolve();
         })
