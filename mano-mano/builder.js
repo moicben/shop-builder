@@ -71,7 +71,7 @@ async function main() {
     // Lancer les 4 groupes en parallèle, avec un décalage de 3 secondes pour chacun
     const groupTasks = groups.map((group, groupIndex) =>
         new Promise(async (resolve) => {
-            // Délai avant le lancement du groupe (ex : 0ms, 3000ms, 6000ms, 9000ms)
+            // Délai avant le lancement du groupe (0ms, 3000ms, 6000ms, 9000ms)
             await new Promise(r => setTimeout(r, groupIndex * 3000));
             
             const repoDir = path.resolve("build-temp", String(groupIndex + 1));

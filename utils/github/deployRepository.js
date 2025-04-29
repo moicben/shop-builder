@@ -24,7 +24,7 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Build et export du site statique Next.js avec les variables d'environnement spécifiques
     const buildEnv = Object.assign({}, process.env, envVars);
-    execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
+    await execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
 
     // Attendre que le build soit terminé
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -39,19 +39,16 @@ export async function deployRepository(shop, sourceRepoDir) {
     fs.writeFileSync(path.join(outDir, 'CNAME'), shop.domain);
 
     // Préparer le déploiement de l'export statique en utilisant l'option cwd
-    execCommand('git init', { stdio: 'ignore', cwd: outDir });
-    execCommand('git add .', { stdio: 'ignore', cwd: outDir });
-    execCommand('git commit -m "Deploy static Next.js site"', { stdio: 'ignore', cwd: outDir });
+    await execCommand('git init', { stdio: 'ignore', cwd: outDir });
+    await execCommand('git add .', { stdio: 'ignore', cwd: outDir });
+    await execCommand('git commit -m "Deploy static Next.js site"', { stdio: 'ignore', cwd: outDir });
 
     const newRepoUrl = `https://github.com/moicben/${shop.domain}`;
     await createRepository(shop.domain);
 
-    execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
-    //execCommand(`git remote add origin https://github.com/moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
-    
-        
-    execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
-    execCommand('git push -u origin main --force', { stdio: 'ignore', cwd: outDir });
+    await execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
+    await execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
+    await execCommand('git push -u origin main --force', { stdio: 'ignore', cwd: outDir });
 
     // Publier sur GitHub Pages
     await publishRepository(shop.domain);
