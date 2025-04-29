@@ -57,11 +57,10 @@ async function main() {
     
     const totalFiles = files.length;
     
-    // Diviser les fichiers en XX groupes parrallèles
-    const groupCount = 1;
-    const groups = Array.from({ length: groupCount }, () => []);
+    // Diviser les fichiers en 4 groupes basés sur l'indice modulo 4
+    const groups = [[], [], [], []];
     files.forEach((file, index) => {
-        groups[index % groupCount].push({ file, index });
+        groups[index % 4].push({ file, index });
     });
     
     // Lancer les groupes en parallèle, avec un décalage de 3 secondes 
