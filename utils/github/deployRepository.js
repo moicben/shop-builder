@@ -7,7 +7,7 @@ import { createRepository } from './createRepository.js';
 import { publishRepository } from './publishRepository.js';
 import { execCommand } from '../execCommand.js';
 import { waitForFolder } from '../waitForFolder.js';
-w
+
 dotenv.config();
 
 export async function deployRepository(shop, sourceRepoDir) {
