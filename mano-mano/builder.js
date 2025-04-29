@@ -69,7 +69,7 @@ async function main() {
     });
     
     // Lancer les 4 groupes en parallèle, avec un décalage de 3 secondes pour chacun
-    const groupTasks = groups.map((group, groupIndex) => 
+    const groupTasks = groups.map((group, groupIndex) =>
         new Promise(async (resolve) => {
             // Délai avant le lancement du groupe (ex : 0ms, 3000ms, 6000ms, 9000ms)
             await new Promise(r => setTimeout(r, groupIndex * 3000));
@@ -78,10 +78,10 @@ async function main() {
             console.log(`[0/5] Initialisation dépôt groupe ${groupIndex + 1}...`);
             await installRepository(repoDir, REPO_ORIGIN);
             
-            // Traiter les fichiers du groupe en parallèle
-            await Promise.all(group.map(({ file, index }) =>
-                processFile(file, index, totalFiles, repoDir)
-            ));
+            // Traiter les fichiers du groupe un par un (séquentiellement)
+            for (const { file, index } of group) {
+                await processFile(file, index, totalFiles, repoDir);
+            }
             resolve();
         })
     );
