@@ -47,7 +47,7 @@ export async function deployRepository(shop, sourceRepoDir) {
     await createRepository(shop.domain);
 
     await execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
-    await execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
+    //await execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
     await execCommand('git push -u origin main --force', { stdio: 'ignore', cwd: outDir });
 
     // Publier sur GitHub Pages

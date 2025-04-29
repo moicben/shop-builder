@@ -85,14 +85,21 @@ async function run() {
     for (const category of categories) {
         const categoryFileName = `${category.categoryTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
         const categoryFilePath = path.join(outputDir, categoryFileName);
-        let categoryProducts = [];
 
-        // Load existing category products if the file exists
+        // Charger les produits existants de la catégorie (depuis outputDir et outputDir/uploaded)
+        let categoryProducts = [];
         if (fs.existsSync(categoryFilePath)) {
             categoryProducts = JSON.parse(fs.readFileSync(categoryFilePath, 'utf8'));
         }
 
-        // Create a set of already scrapped URLs
+        const uploadedCategoryFilePath = path.join(outputDir, 'uploaded', categoryFileName);
+        if (fs.existsSync(uploadedCategoryFilePath)) {
+            const uploadedProducts = JSON.parse(fs.readFileSync(uploadedCategoryFilePath, 'utf8'));
+            // Fusionne les produits du fichier principal et celui "uploaded"
+            categoryProducts = categoryProducts.concat(uploadedProducts);
+        }
+
+        // Créer un ensemble d'URLs déjà scrappées
         const scrappedUrls = new Set(categoryProducts.map(p => p.url));
 
         for (const product of category.products) {

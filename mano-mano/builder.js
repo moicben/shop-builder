@@ -53,7 +53,6 @@ async function main() {
     console.log("--- Lancement du builder Mano Mano ---");
     
     const files = fs.readdirSync(productsDir).filter(file => file.endsWith('.json'));
-    console.log(`Nombre de fichiers à traiter: ${files.length}`);
     
     const totalFiles = files.length;
     
