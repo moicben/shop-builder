@@ -35,5 +35,5 @@ export function execCommand(command, options = {}) {
 }
 
 
-const command = "npm run build"; // Exemple de commande à exécuter
-await execCommand(command); 
+// const command = "npm run build"; // Exemple de commande à exécuter
+// await execCommand(command); 
