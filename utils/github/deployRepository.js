@@ -25,11 +25,11 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Build et export du site statique Next.js avec les variables d'environnement spécifiques
     const buildEnv = Object.assign({}, process.env, envVars);
-    await execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
+    await execCommand('npm run build', { env: buildEnv, stdio: 'inherit', cwd: sourceRepoDir });
 
     // Attendre que le build soit terminé grâce à une boucle de polling (max 10s)
     try {
-      await waitForFolder(outDir, 30000, 4000);
+      await waitForFolder(outDir, 60000, 4000);
     } catch (error) {
       console.error('Error: "out" folder not found within the timeout. Make sure the Next.js export was successful.');
       process.exit(1);
