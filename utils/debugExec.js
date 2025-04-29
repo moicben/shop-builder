@@ -2,7 +2,7 @@ import spawnNpm from 'spawn-npm';
 
 console.log("Début du test spawn-npm...");
 
-const args = ['--version'];
+const args = ['npm --version'];
 const options = { stdio: 'inherit' };
 
 spawnNpm(args, options, (error) => {
