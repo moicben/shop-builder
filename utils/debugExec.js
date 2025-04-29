@@ -1,13 +1,15 @@
-import { spawn } from 'child_process';
+import spawnNpm from 'spawn-npm';
 
-console.log("Test avec spawn natif...");
+console.log("Début du test spawn-npm...");
 
-const child = spawn('npm', ['--version'], { stdio: 'inherit' });
+const args = ['npm --version'];
+const options = { stdio: 'inherit' };
 
-child.on('error', (error) => {
-    console.error("Erreur avec spawn natif:", error);
-});
-
-child.on('close', (code) => {
-    console.log(`Processus terminé avec le code ${code}`);
+spawnNpm(args, options, (error) => {
+    if (error) {
+        console.error("Erreur lors de l'exécution de spawn-npm:", error);
+    } else {
+        console.log("spawn-npm exécuté avec succès");
+    }
+    console.log("Fin du callback spawnNpm.");
 });
