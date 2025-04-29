@@ -4,7 +4,7 @@ import path from 'path';
 
 export function execCommand(command, options = {}) {
     // Log the command and the working directory used
-    console.log(`Running command: "${command}" in cwd: "${options.cwd || process.cwd()}"`);
+    //console.log(`Running command: "${command}" in cwd: "${options.cwd || process.cwd()}"`);
     
     // Merge environment variables
     options.env = { ...process.env, ...options.env };
@@ -13,7 +13,7 @@ export function execCommand(command, options = {}) {
         if (command.startsWith("npm")) {
             // Extraction des arguments pour npm (ex: "npm run build" => ["run", "build"])
             const args = command.split(" ").slice(1);
-            console.log(`npm args: [${args.join(', ')}] with cwd: "${options.cwd}"`);
+            //console.log(`npm args: [${args.join(', ')}] with cwd: "${options.cwd}"`);
 
             // Linux uniquement, utiliser spawn natif
             const child = spawn('npm', args, { stdio: options.stdio || 'inherit', ...options });

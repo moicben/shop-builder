@@ -72,7 +72,7 @@ async function main() {
             
             const repoDir = path.resolve("build-temp", String(groupIndex + 1));
             const groupId = groupIndex + 1;
-            console.log(`[Groupe ${groupId}] [0/5] Initialisation dépôt groupe ${groupId}...`);
+            console.log(`[Groupe ${groupId}] [0/5] Initialisation dépôt ${groupId}...`);
             await installRepository(repoDir, REPO_ORIGIN);
             
             // Traiter les fichiers du groupe un par un (séquentiellement)
