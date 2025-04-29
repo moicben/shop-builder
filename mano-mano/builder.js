@@ -57,13 +57,14 @@ async function main() {
     
     const totalFiles = files.length;
     
-    // Diviser les fichiers en 4 groupes basés sur l'indice modulo 4
-    const groups = [[], [], [], []];
+    // Diviser les fichiers en 10 groupes parrallèles
+    const groupCount = 10;
+    const groups = Array.from({ length: groupCount }, () => []);
     files.forEach((file, index) => {
-        groups[index % 4].push({ file, index });
+        groups[index % groupCount].push({ file, index });
     });
     
-    // Lancer les 4 groupes en parallèle, avec un décalage de 3 secondes pour chacun
+    // Lancer les groupes en parallèle, avec un décalage de 3 secondes 
     const groupTasks = groups.map((group, groupIndex) =>
         new Promise(async (resolve) => {
             // Délai avant le lancement (0ms, 3000ms, 6000ms, 9000ms)
