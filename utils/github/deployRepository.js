@@ -6,7 +6,8 @@ import { getAccessToken } from "../google/getAccessToken.js";
 import { createRepository } from './createRepository.js';
 import { publishRepository } from './publishRepository.js';
 import { execCommand } from '../execCommand.js';
-
+import { waitForFolder } from '../waitForFolder.js';
+w
 dotenv.config();
 
 export async function deployRepository(shop, sourceRepoDir) {
@@ -26,13 +27,12 @@ export async function deployRepository(shop, sourceRepoDir) {
     const buildEnv = Object.assign({}, process.env, envVars);
     await execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
 
-    // Attendre que le build soit terminé
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Vérifier l'existence du dossier "out"
-    if (!fs.existsSync(outDir)) {
-        console.error('Error: "out" folder not found. Make sure the Next.js export was successful.');
-        process.exit(1);
+    // Attendre que le build soit terminé grâce à une boucle de polling (max 10s)
+    try {
+      await waitForFolder(outDir, 30000, 4000);
+    } catch (error) {
+      console.error('Error: "out" folder not found within the timeout. Make sure the Next.js export was successful.');
+      process.exit(1);
     }
 
     // Créer le fichier CNAME dans le dossier "out" pour définir le domaine personnalisé
