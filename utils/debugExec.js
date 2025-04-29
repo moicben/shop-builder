@@ -1,6 +1,7 @@
 import spawnNpm from 'spawn-npm';
 
-// Commande à tester : "npm --version"
+console.log("Début du test spawn-npm...");
+
 const args = ['--version'];
 const options = { stdio: 'inherit' };
 
@@ -10,4 +11,5 @@ spawnNpm(args, options, (error) => {
     } else {
         console.log("spawn-npm exécuté avec succès");
     }
+    console.log("Fin du callback spawnNpm.");
 });
