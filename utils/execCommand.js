@@ -4,7 +4,7 @@ import path from 'path';
 
 export function execCommand(command, options = {}) {
     // Log the command and the working directory used
-    console.log(`Running command: "${command}" in cwd: "${options.cwd || process.cwd()}"`);
+    //console.log(`Running command: "${command}" in cwd: "${options.cwd || process.cwd()}"`);
     
     // Merge environment variables
     options.env = { ...process.env, ...options.env };
@@ -13,34 +13,22 @@ export function execCommand(command, options = {}) {
         if (command.startsWith("npm")) {
             // Extraction des arguments pour npm (ex: "npm run build" => ["run", "build"])
             const args = command.split(" ").slice(1);
-            console.log(`npm args: [${args.join(', ')}] with cwd: "${options.cwd}"`);
+            //console.log(`npm args: [${args.join(', ')}] with cwd: "${options.cwd}"`);
             
-            if (process.platform === 'win32') {
-                // Sous Windows, utiliser spawn-npm pour résoudre npm.cmd
-                spawnNpm(args, options, (error) => {
-                    if (error) {
-                        console.error(`Error executing command: "${command}" in cwd: "${options.cwd}"`, error);
-                        return reject(error);
-                    }
-                    console.log(`Command executed: "${command}"`);
-                    resolve();
-                });
-            } else {
-                // Sous Linux, utiliser spawn natif avec shell:true pour s'assurer que npm est trouvé
-                const child = spawn('npm', args, { stdio: options.stdio || 'inherit', shell: true, ...options });
-                child.on('error', (error) => {
-                    console.error(`Error executing command: "${command}" in cwd: "${options.cwd}"`, error);
-                    return reject(error);
-                });
-                child.on('close', (code) => {
-                    if (code !== 0) {
-                        console.error(`Command "${command}" exited with code ${code}`);
-                        return reject(new Error(`Command failed with code ${code}`));
-                    }
-                    console.log(`Command executed: "${command}"`);
-                    resolve();
-                });
-            }
+            // Linux (uniquement), on utilise spawn natif
+            const child = spawn('npm', args, { stdio: options.stdio || 'inherit', ...options });
+            child.on('error', (error) => {
+                console.error(`Error executing command: "${command}" in cwd: "${options.cwd}"`, error);
+                return reject(error);
+            });
+            child.on('close', (code) => {
+                if (code !== 0) {
+                    console.error(`Command "${command}" exited with code ${code}`);
+                    return reject(new Error(`Command failed with code ${code}`));
+                }
+                console.log(`Command executed: "${command}"`);
+                resolve();
+            });
         } else {
             // Pour les autres commandes, on utilise la commande classique via exec
             exec(command, options, (error, stdout, stderr) => {
