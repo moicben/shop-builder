@@ -24,7 +24,7 @@ const webmasters = google.webmasters({
 export async function submitSitemap(domain) {
   const siteUrl = `https://${domain}`;
   try {
-    console.log(`Submitting sitemap for: ${siteUrl}/sitemap.xml`);
+    //console.log(`Submitting sitemap for: ${siteUrl}/sitemap.xml`);
     await webmasters.sitemaps.submit({
       siteUrl,
       feedpath: `${siteUrl}/sitemap.xml`

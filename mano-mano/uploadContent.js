@@ -1,4 +1,5 @@
 import { supabase } from '../utils/supabase.js'
+import { getCount } from '../utils/supabase/getCount.js';
 
 
 /**
@@ -9,6 +10,9 @@ export async function uploadShop(shopObjects) {
     for (let i = 0; i < shopObjects.length; i++) {
         const shopObj = shopObjects[i];
         const { fileName, shopData, contentData, productsData } = shopObj;
+
+        // Obtention de l'id du shop à partir de la table "shops"
+        shopData.id = await getCount('shops') + 1;
         
         // Etape 1 : Créer le shop dans la table "shops"
         const { data: shopInserted, error: shopError } = await supabase
