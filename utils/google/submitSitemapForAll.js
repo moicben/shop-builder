@@ -1,5 +1,7 @@
 import { fetchData } from '../supabase.js';
+
 import { submitSitemap } from './submitSitemap.js';
+import { indexSite } from './indexSite.js';
 
 async function submitSitemapsForAll() {
   try {
@@ -11,7 +13,7 @@ async function submitSitemapsForAll() {
     for (const shop of shops) {
       if (shop.domain) {
         try {
-          await submitSitemap(shop.domain);
+          await indexSite(shop.domain);
           //console.log(`Sitemap submitted successfully for: ${shop.domain}`);
         } catch (error) {
           console.error(`Error submitting sitemap for ${shop.domain}:`, error);

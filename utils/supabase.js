@@ -26,7 +26,7 @@ export async function fetchData(table, options = {}) {
     .from(table)
     .select(selectFields)
     .match(matchQuery)
-    .limit(options.limit || 100) // Limite à 100, ou custom
+    .limit(options.limit) // Limite à 100, ou custom
 
   if (error) {
     throw new Error(

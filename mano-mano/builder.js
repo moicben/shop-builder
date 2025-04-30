@@ -57,7 +57,7 @@ async function main() {
     const totalFiles = files.length;
     
     // Diviser les fichiers en XX groupes 
-    const groupCount = 1;
+    const groupCount = 6;
     const groups = Array.from({ length: groupCount }, () => []);
     files.forEach((file, index) => {
         groups[index % groupCount].push({ file, index });
