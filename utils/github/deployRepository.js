@@ -24,7 +24,7 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     // Build et export du site statique Next.js avec les variables d'environnement spécifiques
     const buildEnv = Object.assign({}, process.env, envVars);
-    await execCommand('npm run build', { env: buildEnv, stdio: 'ignore', cwd: sourceRepoDir });
+    await execCommand('npm run build', { env: buildEnv, stdio: 'inherit', cwd: sourceRepoDir });
 
     // Attendre que le build soit terminé
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -48,7 +48,7 @@ export async function deployRepository(shop, sourceRepoDir) {
 
     await execCommand(`git remote add origin git@github.com:moicben/${shop.domain}.git`, { stdio: 'ignore', cwd: outDir });
     //await execCommand('git branch -M main', { stdio: 'ignore', cwd: outDir });
-    await execCommand('git push -u origin main --force', { stdio: 'ignore', cwd: outDir });
+    await execCommand('git push -u origin --force', { stdio: 'ignore', cwd: outDir });
 
     // Publier sur GitHub Pages
     await publishRepository(shop.domain);
