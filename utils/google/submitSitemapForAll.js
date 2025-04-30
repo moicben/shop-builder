@@ -13,7 +13,7 @@ async function submitSitemapsForAll() {
     for (const shop of shops) {
       if (shop.domain) {
         try {
-          await indexSite(shop.domain);
+          await submitSitemap(shop.domain);
           //console.log(`Sitemap submitted successfully for: ${shop.domain}`);
         } catch (error) {
           console.error(`Error submitting sitemap for ${shop.domain}:`, error);
