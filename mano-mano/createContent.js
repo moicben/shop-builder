@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import OpenAI from 'openai';
 
 import { findBanner } from './findBanner.js';
+import { getCount } from '../utils/supabase/getCount.js';
 
 dotenv.config();
 
@@ -76,6 +77,7 @@ export async function createContent(fileName) {
   const shopData = {
     name: `${categoryData.title} Mano Mano`,
     domain: `${categoryData.slug}.mano-mano.store`,
+    id : await getCount('shops') + 1,
   };
 
   // Récupère l'URL du premier produit
